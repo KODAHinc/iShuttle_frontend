@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="18dp"
-    android:paddingRight="18dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/new_decision">
 
     <RelativeLayout
         android:id="@+id/relative1"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_weight=".5"
-        android:background="@mipmap/driver">
+        android:layout_height="match_parent"
+        android:layout_weight=".5">
 
         <Button
             android:id="@+id/button3"
             style="@style/Widget.AppCompat.Button.Small"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="57dp"
-            android:layout_marginRight="57dp"
-            android:background="@drawable/background_btn2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:background="@android:color/background_light"
+            android:onClick="DriverClick"
             android:text="Driver"
-            android:visibility="visible"
-            android:onClick="DriverClick"/>
+            android:textColor="@android:color/background_dark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_weight=".5"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@mipmap/students"
-        android:layout_below="@+id/relative1">
+        android:layout_height="match_parent"
+        >
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
-            android:backgroundTint="@android:color/background_light"
+            android:background="@android:color/background_light"
+            android:onClick="StudentClick"
             android:text="Student"
-            android:onClick="StudentClick"/>
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:visibility="visible" />
     </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

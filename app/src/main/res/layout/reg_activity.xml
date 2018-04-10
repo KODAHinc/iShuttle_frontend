@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/registration"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ishuttle.kodah.Register">
 
@@ -17,8 +18,12 @@
         android:layout_marginTop="172dp"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="username"
-        android:inputType="textPersonName" />
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/background_light"
+        android:textStyle="bold"
+        android:visibility="visible" />
 
     <EditText
         android:id="@+id/id_regpassword"
