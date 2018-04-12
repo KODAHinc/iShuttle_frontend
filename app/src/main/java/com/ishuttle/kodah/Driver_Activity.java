@@ -1,6 +1,7 @@
 package com.ishuttle.kodah;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,6 +35,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Driver_Activity extends AppCompatActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -43,7 +49,7 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
     Location mLastlocation;
     LocationRequest mLocationRequest;
     Double lat,lng;
-    String lat_geo,lng_geo;
+    String lat_geo,lng_geo,New_lat,New_lng;
     String route,method;
     int input_route;
     Spinner betterSpinner;
@@ -51,23 +57,24 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
     String line=null;
     String result=null;
     String data=null;
-    String[] UsernameArray,PasswordArray,IDArray;
+    String[] UsernameArray,IDArray,LatArray,LngArray;
+    String[] Geolocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
-        NameTV=(TextView)findViewById(R.id.Name_ID);
-        LatTV=(TextView)findViewById(R.id.latID);
-        LngTV=(TextView)findViewById(R.id.lngID);
+        NameTV=findViewById(R.id.Name_ID);
+        LatTV=findViewById(R.id.latID);
+        LngTV=findViewById(R.id.lngID);
 
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item, SPINNERLIST);
         betterSpinner = (Spinner) findViewById(R.id.spinner);
         betterSpinner.setAdapter(arrayAdapter);
-        String DriverId=getIntent().getStringExtra("value");
-        new setName().execute(DriverId);
+
+
 
         buildGoogleApiClient();
 
@@ -78,8 +85,8 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        //mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -102,11 +109,11 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
     @Override
     public void onLocationChanged(Location location) {
         mLastlocation=location;
-        String Id=getIntent().getStringExtra("value");
+
         lat=location.getLatitude();
         lng=location.getLongitude();
-        lat_geo=lat.toString();
-        lng_geo=lng.toString();
+        New_lat=lat.toString();
+        New_lng=lng.toString();
         input_route = betterSpinner.getSelectedItemPosition();
         switch(input_route){
             case 0:
@@ -122,12 +129,13 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 route="A";
                 break;
         }
-        method="geostore";
-        BackgroundTask backgroundTask=new BackgroundTask(this);
-        backgroundTask.execute(method,Id,route,lat_geo,lng_geo);
+        LatTV.setText(New_lat);
+        LngTV.setText(New_lng);
+        String DriverId=getIntent().getStringExtra("value");
+        new setName().execute(DriverId);
 
-        LatTV.setText(lat_geo);
-        LngTV.setText(lng_geo);
+
+
         //LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
     }
     protected synchronized  void buildGoogleApiClient(){
@@ -138,9 +146,10 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 .build();
         googleApiClient.connect();
     }
-    class setName extends AsyncTask<String,String,String> {
+    @SuppressLint("StaticFieldLeak")
+    class setName extends AsyncTask<String,String,Map<String,String[]>> {
         @Override
-        protected String doInBackground(String... params) {
+        protected Map<String,String[]> doInBackground(String... params) {
 
             try {
 
@@ -169,15 +178,25 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
                 UsernameArray = new String[ja.length()];
                 IDArray = new String[ja.length()];
+                LatArray= new String[ja.length()];
+                LngArray=new String[ja.length()];
+                Geolocation=new String[2];
+                Map<String,String[]> dataMap=new HashMap<>(1);
 
 
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject jo = ja.getJSONObject(i);
                     IDArray[i] = jo.getString("Drivers_id");
                     UsernameArray[i] = jo.getString("Username");
+                    LatArray[i]=jo.getString("NewGeolat");
+                    LngArray[i]=jo.getString("NewGeolng");
                     if ((IDArray[i].equals(DriverId))) {
                         data = UsernameArray[i];
 
+                        Geolocation[0]=LatArray[i];
+                        Geolocation[1]=LngArray[i];
+                        dataMap.put(data,Geolocation);
+                        return dataMap;
                     }
 
 
@@ -186,22 +205,36 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                Log.e("IOexcep","Not Connected");
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e("IOexcep","Not Connected");
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e("JSONexcep","JSON Error");
             }
 
 
-            return data;
+            return null;
         }
 
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            String Name="Mr. "+s;
+        protected void onPostExecute(Map<String,String[]> dataMap) {
+            String Name = null;
+            String Id=getIntent().getStringExtra("value");
+            String[] oldLocation;
+            for (Map.Entry<String, String[]> entry : dataMap.entrySet()) {
+                Name = "Mr. " + entry.getKey();
+                oldLocation=entry.getValue();
+                lat_geo=oldLocation[0];
+                lng_geo=oldLocation[1];
+            }
             NameTV.setText(Name);
+            method="geostore";
+            BackgroundTask backgroundTask=new BackgroundTask(getApplicationContext());
+            backgroundTask.execute(method,Id,route,New_lat,New_lng,lat_geo,lng_geo);
+
         }
 
     }

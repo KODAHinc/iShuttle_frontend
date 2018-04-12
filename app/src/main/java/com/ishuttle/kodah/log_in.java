@@ -10,8 +10,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -139,11 +141,11 @@ public class log_in extends AppCompatActivity {
 
 
             } catch (MalformedURLException e) {
-                Toast.makeText(log_in.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                Log.e("IOexcep","Not Connected");
             } catch (IOException e) {
-                Toast.makeText(log_in.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                Log.e("IOexcep","Not Connected");
             } catch (JSONException e) {
-                Toast.makeText(log_in.this,"Problem getting data,Try again", Toast.LENGTH_SHORT).show();
+                Log.e("JSONexcep","JSON Error");
             }
 
 
@@ -157,8 +159,7 @@ public class log_in extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(),"Wrong Password or You haven't registered,Click on the REGISTER BUTTON to register",Toast.LENGTH_LONG).show();
             }else{
-
-                Toast.makeText(getApplicationContext(),"LOG IN Successful MR."+s,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"LOG IN Successful MR."+s,Toast.LENGTH_LONG).show();
                 finish();
                 Intent intent=new Intent(new Intent(getApplicationContext(),Driver_Activity.class));
                 intent.putExtra("value",s);
