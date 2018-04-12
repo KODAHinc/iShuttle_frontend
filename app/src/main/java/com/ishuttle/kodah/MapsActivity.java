@@ -2,16 +2,22 @@ package com.ishuttle.kodah;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +49,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -97,8 +104,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
 
+        new isInternetAccessibleThread().execute();
 
-        new FetchGeo().execute();
         //showLocation(mMap);
     }
 
@@ -107,9 +114,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -183,10 +190,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             } catch (MalformedURLException e) {
-                Toast.makeText(MapsActivity.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                //Looper.prepare();
+                //Toast.makeText(MapsActivity.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                Log.e("URLexcept","Not Connected");
             } catch (IOException e) {
-                Toast.makeText(MapsActivity.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                //Looper.prepare();
+                //Toast.makeText(MapsActivity.this,"Not Connected", Toast.LENGTH_SHORT).show();
+                Log.e("IOexcep","Not Connected");
+
             } catch (JSONException e) {
+                Looper.prepare();
                 Toast.makeText(MapsActivity.this,"Problem getting data,Check connection", Toast.LENGTH_SHORT).show();
             }
             return geoCordinates;
@@ -200,6 +213,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_demo2)));
             }
         }
+
     }
+    public boolean isNetworkAvailable(){
+        boolean status=false;
+        ConnectivityManager cm=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo=cm.getActiveNetworkInfo();
+        return activeNetworkInfo !=null;
+    }
+@SuppressLint("StaticFieldLeak")
+class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
+    @Override
+    protected Boolean doInBackground(Void... voids) {
+        if(isNetworkAvailable()){
+            try {
+                HttpURLConnection urlc=(HttpURLConnection)(new URL("http://www.google.com").openConnection());
+                urlc.setRequestProperty("User-Agent","Test");
+                urlc.setRequestProperty("Connection","close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+
+                return (urlc.getResponseCode()==200);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOerror","I/O exception");
+            }
+        }else{
+            //Looper.prepare();
+            //Toast.makeText(getApplicationContext(),"Internet not Available!",Toast.LENGTH_SHORT).show();
+            Log.e("NetState","Internet not Available!");
+        }
+        return false;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+
+       if(aBoolean.equals(true))
+        new FetchGeo().execute();
+    }
+}
 
 }
