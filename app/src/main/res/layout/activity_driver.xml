@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/registration_page"
+    android:background="@drawable/driver_page"
     tools:context="com.ishuttle.kodah.Driver_Activity">
 
     <TextView
