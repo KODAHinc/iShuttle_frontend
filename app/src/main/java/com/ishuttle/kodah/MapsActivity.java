@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.ConnectivityManager;
@@ -22,9 +23,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +42,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.DirectionsApi;
@@ -51,6 +56,7 @@ import com.google.maps.model.TrafficModel;
 import com.google.maps.model.TransitMode;
 import com.google.maps.model.TravelMode;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +70,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     InputStream is=null;
     String line=null;
     String result=null;
+    String[] SPINNERLIST = {"C-Commercial to Business School", "B-Brunei to Business School", "A-Gaza to Business School"};
     String[] NewLatArray,NewLngArray,OldLatArray,OldLngArray,RouteArray;
     List<LatLng> OldgeoCordinates;
     List<Map<String,LatLng>> NewgeoCordinates;
@@ -87,13 +96,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Map<String,LatLng> RouteCordinates;
     List<LatLng> NewLatLng,OldLatLng;
 
-    LatLng latlng,latLng,newlatLng,index;
+    LatLng latlng,currentLocation,newlatLng,index;
     Location destination;
     double newlat,newlng;
     //private static final String API_KEY="AIzaSyC3hHJA1icyVAYBpTBvDjEeU6JuAldzF-o";
     private static final String API_KEY="AIzaSyCixRvOByU6urV03272IIPC6X92TquLtB8";
-    String aTime,driveRoutes ;
+    String driveRoutes ;
     List<String> listRoutes,Iroutes;
+    Spinner betterSpinner;
+    //List<Location> Brunei_path=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +114,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item, SPINNERLIST);
+        betterSpinner = (Spinner) findViewById(R.id.map_spinner);
+        betterSpinner.setAdapter(arrayAdapter);
+
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
+
+        //Entering values for brunei path
+
+
     }
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        try {
+            boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.raw_map));
+
+            if (!success) {
+                Log.e("TAG", "Stryle parsing failed");
+            }
+        }catch(Resources.NotFoundException e){
+            Log.e("TAG","Can't find style.Error: ",e);
+        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -133,8 +164,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         mLastlocation=location;
 
-        latLng=new LatLng(location.getLatitude(),location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        currentLocation=new LatLng(location.getLatitude(),location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
 
         new isInternetAccessibleThread().execute();
@@ -204,6 +235,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 OldLatArray=new String[ja.length()];
                 OldLngArray=new String[ja.length()];
                 RouteArray=new String[ja.length()];
+                System.out.println(".............Ja.Length.........");
+                System.out.println(ja.length());
                 NewgeoCordinates=new ArrayList<>();
                 OldgeoCordinates=new ArrayList<>();
                 geoCordinates=new HashMap<>();
@@ -267,7 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                      latlng=OldLatLng.get(i);
                      index=new LatLng((double)i,0);
-                     new getDurationForRoute().execute(latlng,latLng,NewLatLng.get(i),index);
+                     new getDurationForRoute().execute(latlng,currentLocation,NewLatLng.get(i),index);
 
                 /*switch(listRoutes.get(i)){
                     case "C":
@@ -375,18 +408,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected String[] doInBackground(LatLng...latLngs) {
             //We need a context to access the API
-            String[] Coordinates=new String[4];
-            GeoApiContext geoApiContext=new GeoApiContext.Builder()
+            String[] Coordinates=new String[6];
+
+
+            Location loc=new Location("");
+            loc.setLatitude(latLngs[0].latitude);
+            loc.setLongitude(latLngs[0].longitude);
+
+            Location destination=new Location("");
+            destination.setLatitude(latLngs[1].latitude);
+            destination.setLongitude(latLngs[1].longitude);
+            /*GeoApiContext geoApiContext=new GeoApiContext.Builder()
                     .apiKey(API_KEY)
                     .build();
 
             //Perform the actual request
             DirectionsResult directionsResult;
+
+
+            Date currentTime= Calendar.getInstance().getTime();
+            DateTime now= new DateTime(currentTime);
+
             try {
                 directionsResult = DirectionsApi.newRequest(geoApiContext)
                         .mode(TravelMode.DRIVING)
                         .origin(String.valueOf(latLngs[0]))
                         .destination(String.valueOf(latLngs[1]))
+                        .arrivalTime(now)
                         .transitMode(TransitMode.BUS)
                         //.trafficModel(TrafficModel.BEST_GUESS)
                         .await();
@@ -398,23 +446,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //aTime= ;
                 System.out.println(".............Here is my data.........");
                 System.out.println(duration.humanReadable);
-                Coordinates[0]=duration.humanReadable;
+                */
+
+                Coordinates[0]= (getTime(loc,destination)).toString();
                 Double temp=latLngs[2].latitude;
                 Coordinates[1]=temp.toString();
                 temp=latLngs[2].longitude;
                 Coordinates[2]=temp.toString();
                 temp=latLngs[3].latitude;
                 Coordinates[3]=temp.toString();
+                temp=latLngs[0].latitude;
+                Coordinates[4]=temp.toString();
+                temp=latLngs[0].longitude;
+                Coordinates[5]=temp.toString();
                 return Coordinates;
 
-            } catch (ApiException e) {
+            /*} catch (ApiException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            return null;
+            }*/
+            //return null;
         }
 
         @Override
@@ -425,25 +479,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             i=temp.intValue();
             //Marker mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_demo_yellow)));
             LatLng end_location=new LatLng(Double.parseDouble(Coordinates[1]),Double.parseDouble(Coordinates[2]));
+            LatLng start_location=new LatLng(Double.parseDouble(Coordinates[4]),Double.parseDouble(Coordinates[5]));
             //animateMarker(end_location,mCurrent);
+
+
+            Location loc=new Location("");
+            loc.setLatitude(end_location.latitude);
+            loc.setLongitude(end_location.longitude);
+
+            //TODO:Try to use road api and polyline to implement car road movement
+            float distance=mLastlocation.distanceTo(loc);
+
+
+            System.out.println("-----------------Displaying data " + listRoutes.get(i) + "---------------------");
+            System.out.println("The distance is=" + distance );
+            System.out.println("The time is=" + Coordinates[0] );
+
 
 
 
             switch(listRoutes.get(i)){
                 case "C":
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
+                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
                     animateMarker(end_location,mCurrent);
                     break;
                 case "B":
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
+                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
                     animateMarker(end_location,mCurrent);
                     break;
                 case "A":
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
+                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
                     animateMarker(end_location,mCurrent);
                     break;
                 default:
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
+                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
                     animateMarker(end_location,mCurrent);
                     break;
             }
@@ -487,6 +556,144 @@ class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
        if(aBoolean.equals(true))
         new FetchGeo().execute();
     }
+}
+
+public Double getTime(Location start,Location destination){
+        //float dist;
+    Location bus=new Location("");
+    bus=start;
+    //Brunei_path=new ArrayList<>(6);
+
+    Double brunei_path[][]=new Double[6][2];
+
+    Location Itemp=new Location("");
+    /*Itemp.setLatitude(6.6703300);
+    Itemp.setLongitude(-1.5743219);
+    Brunei_path.add(Itemp);
+    System.out.println(Brunei_path.get(0));
+    Itemp.setLatitude(6.6725768);
+    Itemp.setLongitude(-1.5734388);
+    Brunei_path.add(Itemp);
+    System.out.println(Brunei_path.get(1));
+    Itemp.setLatitude(6.6751033);
+    Itemp.setLongitude(-1.5722526);
+    Brunei_path.add(Itemp);
+    System.out.println(Brunei_path.get(2));
+    Itemp.setLatitude(6.675119);
+    Itemp.setLongitude(-1.570731);
+    Brunei_path.add(Itemp);
+    System.out.println(Brunei_path.get(3));
+    Itemp.setLatitude(6.6748622);
+    Itemp.setLongitude(-1.5673230);
+    Brunei_path.add(Itemp);
+    System.out.println("test="+Brunei_path.get(0));
+    System.out.println(Brunei_path.get(4));
+    Itemp.setLatitude(6.6682733);
+    Itemp.setLongitude(-1.5670126);
+    Brunei_path.add(Itemp);
+    System.out.println(Brunei_path.get(5));
+    System.out.println("test="+Brunei_path.get(0));*/
+
+    brunei_path[0][0]= 6.6703300;
+    brunei_path[0][1]= -1.5743219;
+    System.out.println("1="+ brunei_path[0][0] + " & " + brunei_path[0][1]);
+    brunei_path[1][0] = 6.6725768;
+    brunei_path[1][1]= -1.5734388;
+    System.out.println("2="+ brunei_path[1][0] + " & " + brunei_path[1][1]);
+    brunei_path[2][0]=6.6751033;
+    brunei_path[2][1]=-1.5722526;
+    System.out.println("3="+ brunei_path[2][0] + " & " + brunei_path[2][1]);
+    brunei_path[3][0]=6.675119;
+    brunei_path[3][1]=-1.570731;
+    System.out.println("4="+ brunei_path[3][0] + " & " + brunei_path[3][1]);
+    brunei_path[4][0]=6.6748622;
+    brunei_path[4][1]=-1.5673230;
+    System.out.println("5="+ brunei_path[4][0] + " & " + brunei_path[4][1]);
+    System.out.println("test="+ brunei_path[1][0] + " & " + brunei_path[1][1]);
+    brunei_path[5][0]=6.6682733;
+    brunei_path[5][1]=-1.5670126;
+    System.out.println("6="+ brunei_path[5][0] + " & " + brunei_path[5][1]);
+    System.out.println("test="+ brunei_path[0][0] + " & " + brunei_path[0][1]);
+
+    int z=1;
+    Double aTime=0.0;
+    Double Ftime=0.0;
+    int x,y;
+    int temp=0;
+//    System.out.println("0="+Brunei_path.get(0));
+//    System.out.println("1="+Brunei_path.get(1));
+
+    int check=0;
+    Location loc;
+    Location loop_location;
+    //int size=5;
+    int confirm=0;
+    while(z==1){
+        loc=new Location("");
+
+        //dist=bus.distanceTo(destination);
+         for(x=0;x< 6;x++){
+             confirm=0;
+             loop_location=new Location("");
+             loop_location.setLatitude(brunei_path[x][0]);
+             loop_location.setLongitude(brunei_path[x][1]);
+
+            if(destination.distanceTo(loop_location) < bus.distanceTo(destination)){
+                confirm=3;
+                check=3;
+                loc.setLatitude(brunei_path[0][0]);
+                loc.setLongitude(brunei_path[0][1]);
+                for (y=1;y< 6;y++) {
+                    loop_location=new Location("");
+                    loop_location.setLatitude(brunei_path[y][0]);
+                    loop_location.setLongitude(brunei_path[y][1]);
+                    System.out.println("y="+ loop_location);
+                    System.out.println("bus="+ bus);
+                    System.out.println("loc="+ loc);
+                    System.out.println("bus.distanceto(loc)="+ bus.distanceTo(loc));
+                    System.out.println("bus.distanceTo(Routes[y])="+ bus.distanceTo(loop_location));
+                    if ((bus.distanceTo(loc) > bus.distanceTo(loop_location)) && ((bus.distanceTo(loop_location))!=0.0)) {
+                        loc = loop_location;
+                        //temp=y;
+                        System.out.println("passed 1");
+                    }
+
+                    //break inner;
+                }
+
+                System.out.println("passed 2");
+                float temp_dist=bus.distanceTo(loc);
+                bus=new Location("");
+
+                Ftime = (temp_dist / 536.448);
+                aTime=(aTime + Ftime)+1;
+                System.out.println("Time= " + aTime);
+                System.out.println("dist= " + temp_dist);
+                bus.setLatitude(loc.getLatitude());
+                bus.setLongitude(loc.getLongitude());
+                System.out.println("new bus = "+ bus);
+
+                //x=0;
+                //size=temp;
+
+            }
+            if(confirm==0 && x==5){
+                if(check==0){
+                    float temp_dist=bus.distanceTo(destination);
+                    System.out.println();
+                    Ftime = (temp_dist / 536.448);
+                    aTime=(aTime + Ftime)+1;
+                    System.out.println("Time2= " + aTime);
+                    System.out.println("dist2= " + temp_dist);
+                }
+                System.out.println("end case");
+                z=0;
+                break ;
+            }
+
+        }
+    }
+    return aTime;
 }
 
 }
