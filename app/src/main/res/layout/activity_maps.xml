@@ -6,10 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ishuttle.kodah.MapsActivity" >
+
     <Spinner
+        android:id="@+id/map_spinner"
+        style="@style/Animation.Design.BottomSheetDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner">
+        android:background="@color/brown"
+        android:paddingBottom="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="30dp"
+        android:persistentDrawingCache="animation"
+        android:popupBackground="@color/brown"
+        android:requiresFadingEdge="vertical"
+        android:visibility="visible">
 
     </Spinner>
 
@@ -22,7 +33,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinner" >
+        android:layout_below="@+id/map_spinner"
+        >
 
     </fragment>
 </RelativeLayout>
