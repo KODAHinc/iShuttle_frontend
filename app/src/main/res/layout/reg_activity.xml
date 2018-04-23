@@ -6,58 +6,106 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ishuttle.kodah.Register">
 
-    <EditText
-        android:id="@+id/id_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="172dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName"
-        android:textAlignment="viewStart"
-        android:textColor="@android:color/background_light"
-        android:textStyle="bold"
-        android:visibility="visible" />
 
-    <EditText
-        android:id="@+id/id_regpassword"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/id_username"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:hint="password"/>
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/id_code"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/id_regpassword"
-        android:layout_marginTop="18dp"
-        android:ems="10"
-        android:inputType="number"
-        android:hint="secret code"/>
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/register_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/id_code"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:text="REGISTER"
-        android:onClick="RegisterClick"/>
+        <EditText
+            android:id="@+id/id_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="170dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_person_white_24dp"
+            android:drawablePadding="12dp"
+            android:drawableStart="@drawable/ic_person_white_24dp"
+            android:ems="10"
+            android:fontFamily="sans-serif"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:selectAllOnFocus="false"
+            android:singleLine="false"
+            android:textAlignment="viewStart"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+
+            android:textColorHint="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+        <EditText
+            android:id="@+id/id_regpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/id_username"
+            android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/ic_phone_white_24dp"
+            android:drawablePadding="12dp"
+            android:drawableStart="@drawable/ic_phone_white_24dp"
+            android:ems="10"
+            android:hint="Phone Number"
+            android:inputType="number"
+            android:lineSpacingExtra="10sp"
+            android:textColorHint="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/id_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/id_regpassword"
+            android:layout_marginTop="17dp"
+            android:drawableLeft="@drawable/ic_lock_white_24dp"
+            android:drawablePadding="12dp"
+            android:drawableStart="@drawable/ic_lock_white_24dp"
+            android:ems="10"
+            android:fontFamily="sans-serif"
+            android:hint="Secret Code"
+            android:inputType="number"
+            android:textColorHint="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/register_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/background_login"
+            android:onClick="RegisterClick"
+            android:text="REGISTER"
+            android:textColor="@android:color/background_dark" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/id_regpassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="85dp"
+            android:fontFamily="serif"
+            android:text="iShuttle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold|italic" />
+
+    </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
