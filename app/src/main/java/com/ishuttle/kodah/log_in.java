@@ -69,6 +69,17 @@ public class log_in extends AppCompatActivity {
 
         String username=UsernameEt.getText().toString();
         String password = PasswordEt.getText().toString();
+        if (username.matches("")&&password.matches("")){
+            Toast.makeText(this, "You have not entered your Username and Password", Toast.LENGTH_SHORT).show();
+        }
+        else if (username.matches("")) {
+            Toast.makeText(this, "You have not entered your Username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+         else if (password.matches("")) {
+            Toast.makeText(this, "You have not entered your Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if(isInternetAccessible())
             new LoginTask().execute(username, password);

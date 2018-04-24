@@ -32,6 +32,19 @@ public class Register extends AppCompatActivity {
         username=ET_username.getText().toString();
         regpassword=ET_regpassword.getText().toString();
         secret_code=ET_code.getText().toString();
+
+        if (username.matches("")) {
+            Toast.makeText(this, "You have not entered your username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+       else if (secret_code.matches("")) {
+            Toast.makeText(this, "You have not entered your secret code", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (regpassword.matches("")) {
+            Toast.makeText(this, "You have not entered your password", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(secret_code.equals("1234")){
             String method="register";
             BackgroundTask backgroundTask=new BackgroundTask(this);
