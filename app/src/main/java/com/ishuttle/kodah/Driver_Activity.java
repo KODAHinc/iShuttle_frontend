@@ -59,6 +59,7 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
     String data=null;
     String[] UsernameArray,IDArray,LatArray,LngArray;
     String[] Geolocation;
+    Location Brunei,Commercial,Gaza;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,13 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         betterSpinner = (Spinner) findViewById(R.id.spinner);
         betterSpinner.setAdapter(arrayAdapter);
 
+        Brunei=new Location("");
+        Commercial=new Location("");
+        Brunei.setLatitude(6.6702854);
+        Brunei.setLongitude(-1.5743008);
 
+        Commercial.setLatitude(6.6827207);
+        Commercial.setLongitude(-1.5769408);
 
         buildGoogleApiClient();
 
@@ -114,6 +121,15 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         lng=location.getLongitude();
         New_lat=lat.toString();
         New_lng=lng.toString();
+
+
+        if(location.distanceTo(Brunei)<=50){
+            betterSpinner.setSelection(1);
+        }
+        if(location.distanceTo(Commercial)<=50){
+            betterSpinner.setSelection(0);
+        }
+
         input_route = betterSpinner.getSelectedItemPosition();
         switch(input_route){
             case 0:
@@ -126,15 +142,13 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 route="A";
                 break;
             default:
-                route="A";
+                route="B";
                 break;
         }
         LatTV.setText(New_lat);
         LngTV.setText(New_lng);
         String DriverId=getIntent().getStringExtra("value");
         new setName().execute(DriverId);
-
-
 
         //LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
     }

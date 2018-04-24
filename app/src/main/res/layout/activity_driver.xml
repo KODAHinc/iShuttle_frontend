@@ -15,7 +15,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="105dp"
-        android:text="TextView"
+        android:text="MR. "
         android:textAlignment="center"
         android:textSize="40sp"
         android:textStyle="bold" />
@@ -26,7 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
 
     <TextView
         android:id="@+id/latID"

@@ -14,7 +14,7 @@ public class decision_page extends AppCompatActivity {
     }
 
     public void DriverClick(View view){
-        finish();
+
         startActivity(new Intent(this,log_in.class));
     }
     public void StudentClick(View view){

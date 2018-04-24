@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String API_KEY="AIzaSyCixRvOByU6urV03272IIPC6X92TquLtB8";
     String driveRoutes ;
     List<String> listRoutes,Iroutes;
-    Spinner betterSpinner;
+    Spinner routeSpinner;
     //List<Location> Brunei_path=new ArrayList<>();
 
     @Override
@@ -117,12 +117,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item, SPINNERLIST);
-        betterSpinner = (Spinner) findViewById(R.id.map_spinner);
-        betterSpinner.setAdapter(arrayAdapter);
+        routeSpinner = (Spinner) findViewById(R.id.map_spinner);
+        routeSpinner.setAdapter(arrayAdapter);
 
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
 
-        //Entering values for brunei path
+
 
 
     }
@@ -186,9 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return;
         }
-        //LatLng sydney = new LatLng(6.6705943,-1.5741065);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_demo2)));
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
     }
 
@@ -277,7 +275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(Map<List<LatLng>,List<Map<String,LatLng>>> geoMap) {
-            //   OldLatLng.clear();NewgeoCordinates.clear();listRoutes.clear();NewLatLng.clear();
+
             listRoutes=new ArrayList<>();
             NewLatLng=new ArrayList<>();
             Iroutes=new ArrayList<>();
@@ -302,24 +300,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                      index=new LatLng((double)i,0);
                      new getDurationForRoute().execute(latlng,currentLocation,NewLatLng.get(i),index);
 
-                /*switch(listRoutes.get(i)){
-                    case "C":
-                        mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + i).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                        animateMarker(NewLatLng.get(i),mCurrent);
-                        break;
-                    case "B":
-                        mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + i).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
-                        animateMarker(NewLatLng.get(i),mCurrent);
-                        break;
-                    case "A":
-                        mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + i).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
-                        animateMarker(NewLatLng.get(i),mCurrent);
-                        break;
-                    default:
-                        mCurrent=mMap.addMarker(new MarkerOptions().position(latlng).title("Arrival Time of Shuttle: " + i).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                        animateMarker(NewLatLng.get(i),mCurrent);
-                        break;
-                }*/
 
             }
 
@@ -418,35 +398,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Location destination=new Location("");
             destination.setLatitude(latLngs[1].latitude);
             destination.setLongitude(latLngs[1].longitude);
-            /*GeoApiContext geoApiContext=new GeoApiContext.Builder()
-                    .apiKey(API_KEY)
-                    .build();
 
-            //Perform the actual request
-            DirectionsResult directionsResult;
-
-
-            Date currentTime= Calendar.getInstance().getTime();
-            DateTime now= new DateTime(currentTime);
-
-            try {
-                directionsResult = DirectionsApi.newRequest(geoApiContext)
-                        .mode(TravelMode.DRIVING)
-                        .origin(String.valueOf(latLngs[0]))
-                        .destination(String.valueOf(latLngs[1]))
-                        .arrivalTime(now)
-                        .transitMode(TransitMode.BUS)
-                        //.trafficModel(TrafficModel.BEST_GUESS)
-                        .await();
-
-                //-Parse the result
-                DirectionsRoute route=directionsResult.routes[0];
-                DirectionsLeg leg=route.legs[0];
-                Duration duration = leg.duration;
-                //aTime= ;
-                System.out.println(".............Here is my data.........");
-                System.out.println(duration.humanReadable);
-                */
 
                 Coordinates[0]= (getTime(loc,destination)).toString();
                 Double temp=latLngs[2].latitude;
@@ -461,14 +413,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Coordinates[5]=temp.toString();
                 return Coordinates;
 
-            /*} catch (ApiException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            //return null;
+
         }
 
         @Override
@@ -494,26 +439,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             System.out.println("-----------------Displaying data " + listRoutes.get(i) + "---------------------");
             System.out.println("The distance is=" + distance );
             System.out.println("The time is=" + Coordinates[0] );
-
-
+            int input;
+            String route;
+            input=routeSpinner.getSelectedItemPosition();
+            switch(input){
+                case 0:
+                    route="C";
+                    break;
+                case 1:
+                    route="B";
+                    break;
+                case 2:
+                    route="A";
+                    break;
+                default:
+                    route="B";
+                    break;
+            }
 
 
             switch(listRoutes.get(i)){
                 case "C":
+                    if(route.equals("C")){
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                    animateMarker(end_location,mCurrent);
+                    animateMarker(end_location,mCurrent);}
                     break;
                 case "B":
+                    if(route.equals("B")){
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
-                    animateMarker(end_location,mCurrent);
+                    animateMarker(end_location,mCurrent);}
                     break;
                 case "A":
+                    if(route.equals("A")){
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
-                    animateMarker(end_location,mCurrent);
+                    animateMarker(end_location,mCurrent);}
                     break;
                 default:
+                    if(route.equals("C")){
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                    animateMarker(end_location,mCurrent);
+                    animateMarker(end_location,mCurrent);}
                     break;
             }
 
@@ -566,33 +530,7 @@ public Double getTime(Location start,Location destination){
 
     Double brunei_path[][]=new Double[6][2];
 
-    Location Itemp=new Location("");
-    /*Itemp.setLatitude(6.6703300);
-    Itemp.setLongitude(-1.5743219);
-    Brunei_path.add(Itemp);
-    System.out.println(Brunei_path.get(0));
-    Itemp.setLatitude(6.6725768);
-    Itemp.setLongitude(-1.5734388);
-    Brunei_path.add(Itemp);
-    System.out.println(Brunei_path.get(1));
-    Itemp.setLatitude(6.6751033);
-    Itemp.setLongitude(-1.5722526);
-    Brunei_path.add(Itemp);
-    System.out.println(Brunei_path.get(2));
-    Itemp.setLatitude(6.675119);
-    Itemp.setLongitude(-1.570731);
-    Brunei_path.add(Itemp);
-    System.out.println(Brunei_path.get(3));
-    Itemp.setLatitude(6.6748622);
-    Itemp.setLongitude(-1.5673230);
-    Brunei_path.add(Itemp);
-    System.out.println("test="+Brunei_path.get(0));
-    System.out.println(Brunei_path.get(4));
-    Itemp.setLatitude(6.6682733);
-    Itemp.setLongitude(-1.5670126);
-    Brunei_path.add(Itemp);
-    System.out.println(Brunei_path.get(5));
-    System.out.println("test="+Brunei_path.get(0));*/
+
 
     brunei_path[0][0]= 6.6703300;
     brunei_path[0][1]= -1.5743219;
@@ -620,8 +558,7 @@ public Double getTime(Location start,Location destination){
     Double Ftime=0.0;
     int x,y;
     int temp=0;
-//    System.out.println("0="+Brunei_path.get(0));
-//    System.out.println("1="+Brunei_path.get(1));
+
 
     int check=0;
     Location loc;

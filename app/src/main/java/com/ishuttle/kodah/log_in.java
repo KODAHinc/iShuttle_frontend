@@ -75,7 +75,7 @@ public class log_in extends AppCompatActivity {
 
     }
     public void OpenRegClick(View view){
-        finish();
+
         startActivity(new Intent(getApplicationContext(),Register.class));
     }
 
