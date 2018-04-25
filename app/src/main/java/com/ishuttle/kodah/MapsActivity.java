@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.ConnectivityManager;
@@ -20,11 +23,14 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
@@ -89,22 +95,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String line=null;
     String result=null;
     String[] SPINNERLIST = {"C-Commercial to Business School", "B-Brunei to Business School", "A-Gaza to Business School"};
-    String[] NewLatArray,NewLngArray,OldLatArray,OldLngArray,RouteArray;
+    String[] NewLatArray,NewLngArray,LatArray,LngArray,RouteArray;
     List<LatLng> OldgeoCordinates;
     List<Map<String,LatLng>> NewgeoCordinates;
-    Map<List<LatLng>,List<Map<String,LatLng>>> geoCordinates;
+    Map<String,LatLng> geoCordinates;
     Map<String,LatLng> RouteCordinates;
     List<LatLng> NewLatLng,OldLatLng;
+    String tempRoute;
 
-    LatLng latlng,currentLocation,newlatLng,index;
+    LatLng latlng,currentLocation,index;
+    LatLng[] oldlatLng=null;
     Location destination;
     double newlat,newlng;
-    //private static final String API_KEY="AIzaSyC3hHJA1icyVAYBpTBvDjEeU6JuAldzF-o";
     private static final String API_KEY="AIzaSyCixRvOByU6urV03272IIPC6X92TquLtB8";
+    private static final long TURN_ANIMATION_DURATION=3000;
+    private static final long MOVE_ANIMATION_DURATION=3000;
     String driveRoutes ;
     List<String> listRoutes,Iroutes;
     Spinner routeSpinner;
-    //List<Location> Brunei_path=new ArrayList<>();
+    Bitmap mMarkerIcon;
+    private List<LatLng> mPathPolygonPoints;
+    int mIndexCurrentPoint=0;
+    Marker mCurrent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
 
+        if(oldlatLng!=null)
         new isInternetAccessibleThread().execute();
 
         //showLocation(mMap);
@@ -188,6 +201,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
          LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
+        //new LocationTask((LocationTask.AsyncResponse) this).execute();
+
+        LocationTask locationTask= new LocationTask(new LocationTask.AsyncResponse() {
+            @Override
+            public void processFinish(LatLng[] output) {
+                oldlatLng=output;
+            }
+        });
+        locationTask.execute();
+
     }
 
     @Override
@@ -201,10 +224,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+
     @SuppressLint("StaticFieldLeak")
-    class FetchGeo extends AsyncTask<Void,Void,Map<List<LatLng>,List<Map<String,LatLng>>>>{
+    class FetchGeo extends AsyncTask<Void,Void,Map<String,LatLng>>{
         @Override
-        protected Map<List<LatLng>,List<Map<String,LatLng>>> doInBackground(Void... voids) {
+        protected Map<String,LatLng> doInBackground(Void... voids) {
             URL url;
 
             try {
@@ -216,6 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //READ IS content into a string
                 BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
                 StringBuilder sb = new StringBuilder();
+                String route;
 
 
                 while ((line = br.readLine()) != null) {
@@ -230,32 +255,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 NewLatArray = new String[ja.length()];
                 NewLngArray = new String[ja.length()];
-                OldLatArray=new String[ja.length()];
-                OldLngArray=new String[ja.length()];
+                LatArray=new String[ja.length()];
+                LngArray=new String[ja.length()];
                 RouteArray=new String[ja.length()];
                 System.out.println(".............Ja.Length.........");
                 System.out.println(ja.length());
                 NewgeoCordinates=new ArrayList<>();
                 OldgeoCordinates=new ArrayList<>();
                 geoCordinates=new HashMap<>();
-                RouteCordinates=new HashMap<>();
+
 
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject jo = ja.getJSONObject(i);
 
-                    OldLatArray[i] = jo.getString("geolat");
-                    OldLngArray[i] = jo.getString("geolng");
-                    NewLatArray[i] = jo.getString("NewGeolat");
-                    NewLngArray[i] = jo.getString("NewGeolng");
+                    LatArray[i] = jo.getString("geolat");
+                    LngArray[i] = jo.getString("geolng");
                     RouteArray[i] = jo.getString("Drivers_route");
-                    System.out.println(".............Here is my data.........");
-                    System.out.println(RouteArray[i]);
 
-                    OldgeoCordinates.add(new LatLng(Double.parseDouble(OldLatArray[i]), Double.parseDouble(OldLngArray[i])));
-                    RouteCordinates.put(RouteArray[i],new LatLng(Double.parseDouble(NewLatArray[i]), Double.parseDouble(NewLngArray[i])));
-                    NewgeoCordinates.add(RouteCordinates);
 
-                    geoCordinates.put(OldgeoCordinates,NewgeoCordinates);
+                    //OldgeoCordinates.add(new LatLng(Double.parseDouble(LatArray[i]), Double.parseDouble(LngArray[i])));
+                    geoCordinates.put(RouteArray[i],new LatLng(Double.parseDouble(LatArray[i]),Double.parseDouble(LngArray[i])));
 
 
                 }
@@ -274,34 +293,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        protected void onPostExecute(Map<List<LatLng>,List<Map<String,LatLng>>> geoMap) {
+        protected void onPostExecute(Map<String,LatLng> geoMap) {
 
             listRoutes=new ArrayList<>();
             NewLatLng=new ArrayList<>();
-            Iroutes=new ArrayList<>();
-            Marker mCurrent;
-            int y;
-            for (Map.Entry<List<LatLng>,List<Map<String,LatLng>>> entry: geoMap.entrySet()) {
+            LatLng newlatlng;
+            int i=0;
 
-                OldLatLng=entry.getKey();
-                NewgeoCordinates=entry.getValue();
-                for(y=0;y<NewgeoCordinates.size();y++) {
-                    for (Map.Entry<String, LatLng> entry1 : NewgeoCordinates.get(y).entrySet()) {
-                        listRoutes.add(entry1.getKey());
-                        NewLatLng.add(entry1.getValue());
+            for (Map.Entry<String,LatLng> entry: geoMap.entrySet()) {
+                newlatlng=entry.getValue();
+                //newlatlng=new LatLng(6.6725768,-1.5734388);
 
-                    }
-                }
+                System.out.println(".............Here is my data.........");
+                System.out.println("Route "+ i + "=" + entry.getKey());
+                listRoutes.add(entry.getKey());
+                index=new LatLng((double)i,0);
+                new getDurationForRoute().execute(oldlatLng[i],currentLocation,newlatlng,index);
+                System.out.println("oldlatlng "+ i + "=" + oldlatLng[i]);
+                System.out.println("newlatlng "+ i + "=" + newlatlng);
+                oldlatLng[i]=newlatlng;
+                i++;
             }
-            mMap.clear();
-            for(int i=0;i<OldLatLng.size();i++){
 
-                     latlng=OldLatLng.get(i);
-                     index=new LatLng((double)i,0);
-                     new getDurationForRoute().execute(latlng,currentLocation,NewLatLng.get(i),index);
-
-
-            }
 
         }
 
@@ -318,7 +331,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.LinearFixed();
 
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-            valueAnimator.setDuration(3000); // duration 3 second
+            valueAnimator.setDuration(5000); // duration 3 second
             valueAnimator.setInterpolator(new LinearInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -400,7 +413,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             destination.setLongitude(latLngs[1].longitude);
 
 
-                Coordinates[0]= (getTime(loc,destination)).toString();
+
                 Double temp=latLngs[2].latitude;
                 Coordinates[1]=temp.toString();
                 temp=latLngs[2].longitude;
@@ -411,6 +424,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Coordinates[4]=temp.toString();
                 temp=latLngs[0].longitude;
                 Coordinates[5]=temp.toString();
+                Coordinates[0]= (getTime(loc,destination,Coordinates[3])).toString();
                 return Coordinates;
 
 
@@ -418,7 +432,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(String[] Coordinates) {
-            Marker mCurrent;
+
             Double temp=Double.parseDouble(Coordinates[3]);
             int i;
             i=temp.intValue();
@@ -457,27 +471,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     break;
             }
 
-
+            mMap.clear();
             switch(listRoutes.get(i)){
                 case "C":
                     if(route.equals("C")){
+                        System.out.println("icon displayed");
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                    animateMarker(end_location,mCurrent);}
+                    //animateCarMove(mCurrent,start_location,end_location,3000,"C");
+                        if(!start_location.equals(end_location))
+                            animateMarker(end_location,mCurrent);
+
+                    }
                     break;
                 case "B":
-                    if(route.equals("B")){
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
-                    animateMarker(end_location,mCurrent);}
+                    if(route.equals("B")) {
+                        System.out.println("icon displayed");
+                        mCurrent = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
+                        //end_location=new LatLng(6.6725768,-1.5734388);
+                        if(!start_location.equals(end_location))
+                            animateMarker(end_location,mCurrent);
+                        //animateCarMove(mCurrent, start_location, end_location, 3000, "B");
+                    }
                     break;
                 case "A":
                     if(route.equals("A")){
-                    mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
-                    animateMarker(end_location,mCurrent);}
+                        System.out.println("icon displayed");
+                        mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
+                        if(!start_location.equals(end_location))
+                            animateMarker(end_location,mCurrent);
+                        //animateCarMove(mCurrent,start_location,end_location,3000,"A");
+                    }
                     break;
                 default:
                     if(route.equals("C")){
+                        System.out.println("icon displayed");
                     mCurrent=mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                    animateMarker(end_location,mCurrent);}
+                        if(!start_location.equals(end_location))
+                            animateMarker(end_location,mCurrent);
+                        //animateCarMove(mCurrent,start_location,end_location,3000,"C");
+                    }
                     break;
             }
 
@@ -503,7 +535,13 @@ class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
                 urlc.setConnectTimeout(1500);
                 urlc.connect();
 
-                return (urlc.getResponseCode()==200);
+                if(urlc.getResponseCode()==200){
+                    /*Snackbar snackbar=Snackbar.make(getWindow().getDecorView().getRootView(),"User Online",Snackbar.LENGTH_SHORT);
+                    View view=snackbar.getView();
+                    view.setBackgroundColor(ContextCompat.getColor(getAc));*/
+                    return true;
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("IOerror","I/O exception");
@@ -522,36 +560,85 @@ class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
     }
 }
 
-public Double getTime(Location start,Location destination){
-        //float dist;
-    Location bus=new Location("");
+public Double getTime(Location start,Location destination,String index){
+
+    Location bus;
     bus=start;
-    //Brunei_path=new ArrayList<>(6);
 
-    Double brunei_path[][]=new Double[6][2];
+    Double Dtemp=Double.parseDouble(index);
+    int i;
+    i=Dtemp.intValue();
+    Double Path[][]=null;
+    int end=0;
+    switch(listRoutes.get(i)){
+        case "C":
+            Path=new Double[8][2];
+             end=8;
+
+            Path[0][0]= 6.682836;
+            Path[0][1]= -1.576970;
+            Path[1][0]= 6.682376;
+            Path[1][1]= -1.576931;
+            Path[2][0]= 6.681777;
+            Path[2][1]= -1.575653;
+            Path[3][0] = 6.679165;
+            Path[3][1]= -1.572579;
+            Path[4][0]=6.678509;
+            Path[4][1]=-1.570892;
+            Path[5][0]=6.675119;
+            Path[5][1]=-1.570731;
+            Path[6][0]=6.6748622;
+            Path[6][1]=-1.5673230;
+            Path[7][0]=6.6682733;
+            Path[7][1]=-1.5670126;
+            break;
+        case "B":
+            Path=new Double[6][2];
+            end =6;
+
+            Path[0][0]= 6.6703300;
+            Path[0][1]= -1.5743219;
+            Path[1][0] = 6.6725768;
+            Path[1][1]= -1.5734388;
+            Path[2][0]=6.6751033;
+            Path[2][1]=-1.5722526;
+            Path[3][0]=6.675119;
+            Path[3][1]=-1.570731;
+            Path[4][0]=6.6748622;
+            Path[4][1]=-1.5673230;
+            Path[5][0]=6.6682733;
+            Path[5][1]=-1.5670126;
+
+            break;
+        case "A":
+            Path=new Double[9][2];
+            end=9;
+
+            Path[0][0]= 6.687655;
+            Path[0][1]= -1.556916;
+            Path[1][0]= 6.686565;
+            Path[1][1]= -1.557055;
+            Path[2][0]= 6.684714;
+            Path[2][1]= -1.558249;
+            Path[3][0]= 6.685548;
+            Path[3][1]= -1.560698;
+            Path[4][0] = 6.681832;
+            Path[4][1]= -1.562225;
+            Path[5][0]=6.680689;
+            Path[5][1]=-1.564802;
+            Path[6][0]=6.677267;
+            Path[6][1]=-1.567183;
+            Path[7][0]=6.6748622;
+            Path[7][1]=-1.5673230;
+            Path[8][0]=6.6682733;
+            Path[8][1]=-1.5670126;
+            break;
+        default:
+
+            break;
+    }
 
 
-
-    brunei_path[0][0]= 6.6703300;
-    brunei_path[0][1]= -1.5743219;
-    System.out.println("1="+ brunei_path[0][0] + " & " + brunei_path[0][1]);
-    brunei_path[1][0] = 6.6725768;
-    brunei_path[1][1]= -1.5734388;
-    System.out.println("2="+ brunei_path[1][0] + " & " + brunei_path[1][1]);
-    brunei_path[2][0]=6.6751033;
-    brunei_path[2][1]=-1.5722526;
-    System.out.println("3="+ brunei_path[2][0] + " & " + brunei_path[2][1]);
-    brunei_path[3][0]=6.675119;
-    brunei_path[3][1]=-1.570731;
-    System.out.println("4="+ brunei_path[3][0] + " & " + brunei_path[3][1]);
-    brunei_path[4][0]=6.6748622;
-    brunei_path[4][1]=-1.5673230;
-    System.out.println("5="+ brunei_path[4][0] + " & " + brunei_path[4][1]);
-    System.out.println("test="+ brunei_path[1][0] + " & " + brunei_path[1][1]);
-    brunei_path[5][0]=6.6682733;
-    brunei_path[5][1]=-1.5670126;
-    System.out.println("6="+ brunei_path[5][0] + " & " + brunei_path[5][1]);
-    System.out.println("test="+ brunei_path[0][0] + " & " + brunei_path[0][1]);
 
     int z=1;
     Double aTime=0.0;
@@ -562,7 +649,9 @@ public Double getTime(Location start,Location destination){
 
     int check=0;
     Location loc;
-    Location loop_location;
+    Location loop_location,prev_loc=new Location(""),next_loc=new Location("");
+    int begin=1;
+
     //int size=5;
     int confirm=0;
     while(z==1){
@@ -572,18 +661,18 @@ public Double getTime(Location start,Location destination){
          for(x=0;x< 6;x++){
              confirm=0;
              loop_location=new Location("");
-             loop_location.setLatitude(brunei_path[x][0]);
-             loop_location.setLongitude(brunei_path[x][1]);
+             loop_location.setLatitude(Path[x][0]);
+             loop_location.setLongitude(Path[x][1]);
 
             if(destination.distanceTo(loop_location) < bus.distanceTo(destination)){
                 confirm=3;
                 check=3;
-                loc.setLatitude(brunei_path[0][0]);
-                loc.setLongitude(brunei_path[0][1]);
-                for (y=1;y< 6;y++) {
+                loc.setLatitude(Path[begin-1][0]);
+                loc.setLongitude(Path[begin-1][1]);
+                for (y=begin;y< end;y++) {
                     loop_location=new Location("");
-                    loop_location.setLatitude(brunei_path[y][0]);
-                    loop_location.setLongitude(brunei_path[y][1]);
+                    loop_location.setLatitude(Path[y][0]);
+                    loop_location.setLongitude(Path[y][1]);
                     System.out.println("y="+ loop_location);
                     System.out.println("bus="+ bus);
                     System.out.println("loc="+ loc);
@@ -591,12 +680,14 @@ public Double getTime(Location start,Location destination){
                     System.out.println("bus.distanceTo(Routes[y])="+ bus.distanceTo(loop_location));
                     if ((bus.distanceTo(loc) > bus.distanceTo(loop_location)) && ((bus.distanceTo(loop_location))!=0.0)) {
                         loc = loop_location;
-                        //temp=y;
+                        temp=y;
                         System.out.println("passed 1");
                     }
 
                     //break inner;
                 }
+
+
 
                 System.out.println("passed 2");
                 float temp_dist=bus.distanceTo(loc);
@@ -609,8 +700,22 @@ public Double getTime(Location start,Location destination){
                 bus.setLatitude(loc.getLatitude());
                 bus.setLongitude(loc.getLongitude());
                 System.out.println("new bus = "+ bus);
+                if(temp!=0) {
+                    prev_loc.setLatitude(Path[temp - 1][0]);
+                    prev_loc.setLongitude(Path[temp - 1][1]);
+                }
 
-                //x=0;
+                next_loc.setLatitude(Path[temp+1][0]);
+                next_loc.setLongitude(Path[temp+1][1]);
+
+                if(prev_loc.distanceTo(destination)<next_loc.distanceTo(destination)){
+                    end=temp+1;
+                }
+                else if(prev_loc.distanceTo(destination)>next_loc.distanceTo(destination)){
+                    begin=temp;
+                }
+
+                x=0;
                 //size=temp;
 
             }
@@ -632,5 +737,117 @@ public Double getTime(Location start,Location destination){
     }
     return aTime;
 }
+
+
+    private void animateCarMove(final Marker marker, final LatLng beginLatLng, final LatLng endLatLng, final long duration,String Route) {
+        mIndexCurrentPoint=0;
+        final Handler handler = new Handler();
+        final long startTime = SystemClock.uptimeMillis();
+        if(Route.equals("C"))
+           mMarkerIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.commercial_bus);
+
+        if(Route.equals("B"))
+            mMarkerIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.brunei_bus);
+
+        if(Route.equals("A"))
+            mMarkerIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.bus_gaza);
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        // set car bearing for current part of path
+        float angleDeg = (float)(180 * getAngle(beginLatLng, endLatLng) / Math.PI);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angleDeg);
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), matrix, true)));
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // calculate phase of animation
+                long elapsed = SystemClock.uptimeMillis() - startTime;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                // calculate new position for marker
+                double lat = (endLatLng.latitude - beginLatLng.latitude) * t + beginLatLng.latitude;
+                double lngDelta = endLatLng.longitude - beginLatLng.longitude;
+
+                if (Math.abs(lngDelta) > 180) {
+                    lngDelta -= Math.signum(lngDelta) * 360;
+                }
+                double lng = lngDelta * t + beginLatLng.longitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                // if not end of line segment of path
+                if (t < 1.0) {
+                    // call next marker position
+                    handler.postDelayed(this, 16);
+                } else {
+                    // call turn animation
+
+                    //nextTurnAnimation();
+                }
+            }
+        });
+    }
+
+    private double getAngle(LatLng beginLatLng, LatLng endLatLng) {
+        double f1 = Math.PI * beginLatLng.latitude / 180;
+        double f2 = Math.PI * endLatLng.latitude / 180;
+        double dl = Math.PI * (endLatLng.longitude - beginLatLng.longitude) / 180;
+        return Math.atan2(Math.sin(dl) * Math.cos(f2) , Math.cos(f1) * Math.sin(f2) - Math.sin(f1) * Math.cos(f2) * Math.cos(dl));
+    }
+
+    private void nextTurnAnimation() {
+        mIndexCurrentPoint++;
+
+        if (mIndexCurrentPoint < mPathPolygonPoints.size() - 1) {
+            LatLng prevLatLng = mPathPolygonPoints.get(mIndexCurrentPoint - 1);
+            LatLng currLatLng = mPathPolygonPoints.get(mIndexCurrentPoint);
+            LatLng nextLatLng = mPathPolygonPoints.get(mIndexCurrentPoint + 1);
+
+            float beginAngle = (float)(180 * getAngle(prevLatLng, currLatLng) / Math.PI);
+            float endAngle = (float)(180 * getAngle(currLatLng, nextLatLng) / Math.PI);
+
+            animateCarTurn(mCurrent, beginAngle, endAngle, TURN_ANIMATION_DURATION);
+        }
+    }
+
+    private void animateCarTurn(final Marker marker, final float startAngle, final float endAngle, final long duration) {
+        final Handler handler = new Handler();
+        final long startTime = SystemClock.uptimeMillis();
+        final Interpolator interpolator = new LinearInterpolator();
+
+        final float dAndgle = endAngle - startAngle;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(startAngle);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), matrix, true);
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(rotatedBitmap));
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                long elapsed = SystemClock.uptimeMillis() - startTime;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+
+                Matrix m = new Matrix();
+                m.postRotate(startAngle + dAndgle * t);
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), m, true)));
+
+                if (t < 1.0) {
+                    handler.postDelayed(this, 16);
+                } else {
+                    nextMoveAnimation();
+                }
+            }
+        });
+    }
+
+    private void nextMoveAnimation() {
+        if (mIndexCurrentPoint <  mPathPolygonPoints.size() - 1) {
+            animateCarMove(mCurrent, mPathPolygonPoints.get(mIndexCurrentPoint), mPathPolygonPoints.get(mIndexCurrentPoint+1), MOVE_ANIMATION_DURATION,tempRoute);
+        }
+    }
 
 }
