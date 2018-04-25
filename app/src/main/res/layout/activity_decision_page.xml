@@ -75,7 +75,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
-            android:onClick="StudentClick"
+            android:onClick="LocateClick"
             android:text="locateKNUST"
             android:textColor="@android:color/holo_red_light"
             android:textSize="24sp"
