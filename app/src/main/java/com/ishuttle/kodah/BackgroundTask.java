@@ -62,8 +62,7 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
             String route=params[2];
             String lat_geo=params[3];
             String lng_geo=params[4];
-            String old_lat=params[5];
-            String old_lng=params[6];
+
             try {
                 URL url=new URL(geo_url);
                 HttpURLConnection httpURLConnection=(HttpURLConnection)url.openConnection();
@@ -73,10 +72,8 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
                 BufferedWriter bufferedWriter=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
                 String data = URLEncoder.encode("driver_id","UTF-8")+"="+URLEncoder.encode(Id,"UTF-8")+"&"+
                         URLEncoder.encode("drivers_route","UTF-8")+"="+URLEncoder.encode(route,"UTF-8")+"&"+
-                        URLEncoder.encode("NewGeolat","UTF-8")+"="+URLEncoder.encode(lat_geo,"UTF-8")+"&"+
-                        URLEncoder.encode("NewGeolng","UTF-8")+"="+URLEncoder.encode(lng_geo,"UTF-8")+"&"+
-                        URLEncoder.encode("geolat","UTF-8")+"="+URLEncoder.encode(old_lat,"UTF-8")+"&"+
-                        URLEncoder.encode("geolng","UTF-8")+"="+URLEncoder.encode(old_lng,"UTF-8");
+                        URLEncoder.encode("geolat","UTF-8")+"="+URLEncoder.encode(lat_geo,"UTF-8")+"&"+
+                        URLEncoder.encode("geolng","UTF-8")+"="+URLEncoder.encode(lng_geo,"UTF-8");
                 bufferedWriter.write(data);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -95,15 +92,6 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
         return null;
     }
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-    }
 
     @Override
     protected void onPostExecute(String result) {
