@@ -7,7 +7,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    android:background="@drawable/decision_page">
+    android:background="@drawable/new_image">
     <RelativeLayout
         android:layout_weight=".3"
         android:layout_width="match_parent"
@@ -32,6 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="25dp"
             android:background="@drawable/background_login"
+            android:fontFamily="serif"
             android:onClick="DriverClick"
             android:text="Driver"
             android:textColor="@android:color/background_dark"
@@ -54,6 +55,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
+            android:fontFamily="serif"
             android:onClick="StudentClick"
             android:text="Student"
             android:textColor="@android:color/holo_red_light"
@@ -75,9 +77,10 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
+            android:fontFamily="serif"
             android:onClick="StudentClick"
             android:text="locateKNUST"
-            android:textColor="@android:color/holo_red_light"
+            android:textColor="@android:color/holo_orange_light"
             android:textSize="24sp"
             android:textStyle="normal|bold"
             android:visibility="visible" />

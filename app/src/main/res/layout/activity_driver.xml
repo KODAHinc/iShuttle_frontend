@@ -11,10 +11,10 @@
         android:id="@+id/Name_ID"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_above="@+id/spinner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="105dp"
+        android:layout_marginBottom="41dp"
         android:text="MR. "
         android:textAlignment="center"
         android:textSize="40sp"
@@ -30,23 +30,4 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"/>
 
-    <TextView
-        android:id="@+id/latID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinner"
-        android:layout_marginTop="52dp"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/lngID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/latID"
-        android:layout_alignRight="@+id/latID"
-        android:layout_below="@+id/latID"
-        android:layout_marginTop="35dp"
-        android:text="TextView" />
 </RelativeLayout>

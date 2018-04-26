@@ -58,7 +58,7 @@ public class log_in extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         UsernameEt=(EditText)findViewById(R.id.username_id);
         PasswordEt=(EditText)findViewById(R.id.password_id);
-        layout=findViewById(R.id.Ldisplay);
+        layout=findViewById(R.id.display);
 
 
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));

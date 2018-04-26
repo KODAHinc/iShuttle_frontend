@@ -66,8 +66,8 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
         NameTV=findViewById(R.id.Name_ID);
-        LatTV=findViewById(R.id.latID);
-        LngTV=findViewById(R.id.lngID);
+        //LatTV=findViewById(R.id.latID);
+        //LngTV=findViewById(R.id.lngID);
 
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
@@ -145,8 +145,8 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 route="B";
                 break;
         }
-        LatTV.setText(New_lat);
-        LngTV.setText(New_lng);
+        //LatTV.setText(New_lat);
+        //LngTV.setText(New_lng);
         String DriverId=getIntent().getStringExtra("value");
         new setName().execute(DriverId);
 

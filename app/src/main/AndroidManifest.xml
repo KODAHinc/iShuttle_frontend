@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -48,27 +49,25 @@
         <activity android:name=".log_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Register"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
         <activity android:name=".Driver_Activity" />
-        <activity android:name=".Splash_screen" >
+        <activity android:name=".Splash_screen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".decision_page"></activity>
+        <activity android:name=".decision_page" />
+        <activity android:name=".Main_intro"></activity>
     </application>
 
 </manifest>
