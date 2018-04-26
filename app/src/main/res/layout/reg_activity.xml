@@ -50,7 +50,7 @@
             android:maxLines="1"
             android:padding="8dp"
             android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-            android:textColorHint="@color/common_google_signin_btn_text_dark_pressed"/>
+            android:textColorHint="@color/common_google_signin_btn_text_dark_pressed" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -72,8 +72,7 @@
             android:padding="8dp"
             android:singleLine="false"
             android:textColor="@color/common_google_signin_btn_text_dark_default"
-            android:textColorHint="#fff"
-            />
+            android:textColorHint="#fff" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

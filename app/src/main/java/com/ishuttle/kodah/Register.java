@@ -45,8 +45,11 @@ public class Register extends AppCompatActivity {
             Toast.makeText(this, "You have not entered your password", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(secret_code.equals("1234")){
+        if(secret_code.equals("2007")){
             String method="register";
+
+
+
             BackgroundTask backgroundTask=new BackgroundTask(this);
             backgroundTask.execute(method,username,regpassword);
 

@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/iShuttle.iml" filepath="$PROJECT_DIR$/iShuttle.iml" />
-      <module fileurl="file://C:\Users\Misan\Desktop\iShuttle\iShuttle_frontend.iml" filepath="C:\Users\Misan\Desktop\iShuttle\iShuttle_frontend.iml" />
     </modules>
   </component>
 </project>
