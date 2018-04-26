@@ -43,13 +43,12 @@ import java.util.Set;
 public class Driver_Activity extends AppCompatActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     TextView NameTV,LatTV,LngTV;
-    //String data="Mr Dummy Data";
     String[] SPINNERLIST = {"C-Commercial to Business School", "B-Brunei to Business School", "A-Gaza to Business School"};
     GoogleApiClient googleApiClient;
     Location mLastlocation;
     LocationRequest mLocationRequest;
     Double lat,lng;
-    String lat_geo,lng_geo,New_lat,New_lng;
+    String New_lat,New_lng;
     String route,method;
     int input_route;
     Spinner betterSpinner;
@@ -82,6 +81,12 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
         Commercial.setLatitude(6.6827207);
         Commercial.setLongitude(-1.5769408);
+
+        Gaza.setLatitude(6.687655);
+        Gaza.setLongitude(-1.556916);
+
+        String DriverId=getIntent().getStringExtra("value");
+        new setName().execute(DriverId);
 
         buildGoogleApiClient();
 
@@ -129,6 +134,9 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         if(location.distanceTo(Commercial)<=50){
             betterSpinner.setSelection(0);
         }
+        if(location.distanceTo(Gaza)<=50){
+            betterSpinner.setSelection(2);
+        }
 
         input_route = betterSpinner.getSelectedItemPosition();
         switch(input_route){
@@ -148,7 +156,9 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         //LatTV.setText(New_lat);
         //LngTV.setText(New_lng);
         String DriverId=getIntent().getStringExtra("value");
-        new setName().execute(DriverId);
+        method="geostore";
+        BackgroundTask backgroundTask=new BackgroundTask(getApplicationContext());
+        backgroundTask.execute(method,DriverId,route,New_lat,New_lng);
 
         //LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
     }
@@ -161,9 +171,9 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
         googleApiClient.connect();
     }
     @SuppressLint("StaticFieldLeak")
-    class setName extends AsyncTask<String,String,Map<String,String[]>> {
+    class setName extends AsyncTask<String,String,String> {
         @Override
-        protected Map<String,String[]> doInBackground(String... params) {
+        protected String doInBackground(String... params) {
 
             try {
 
@@ -195,22 +205,18 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 LatArray= new String[ja.length()];
                 LngArray=new String[ja.length()];
                 Geolocation=new String[2];
-                Map<String,String[]> dataMap=new HashMap<>(1);
+                //Map<String,String> dataMap=new HashMap<>(1);
 
 
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject jo = ja.getJSONObject(i);
                     IDArray[i] = jo.getString("Drivers_id");
                     UsernameArray[i] = jo.getString("Username");
-                    LatArray[i]=jo.getString("NewGeolat");
-                    LngArray[i]=jo.getString("NewGeolng");
                     if ((IDArray[i].equals(DriverId))) {
                         data = UsernameArray[i];
 
-                        Geolocation[0]=LatArray[i];
-                        Geolocation[1]=LngArray[i];
-                        dataMap.put(data,Geolocation);
-                        return dataMap;
+
+                        return data;
                     }
 
 
@@ -234,20 +240,13 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
 
         @Override
-        protected void onPostExecute(Map<String,String[]> dataMap) {
+        protected void onPostExecute(String data) {
             String Name = null;
             String Id=getIntent().getStringExtra("value");
-            String[] oldLocation;
-            for (Map.Entry<String, String[]> entry : dataMap.entrySet()) {
-                Name = "Mr. " + entry.getKey();
-                oldLocation=entry.getValue();
-                lat_geo=oldLocation[0];
-                lng_geo=oldLocation[1];
-            }
+                Name = "Mr. " + data;
+
             NameTV.setText(Name);
-            method="geostore";
-            BackgroundTask backgroundTask=new BackgroundTask(getApplicationContext());
-            backgroundTask.execute(method,Id,route,New_lat,New_lng,lat_geo,lng_geo);
+
 
         }
 

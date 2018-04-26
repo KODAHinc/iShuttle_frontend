@@ -3,6 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/registration"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ishuttle.kodah.Register">
 
@@ -11,65 +15,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="278dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="serif"
+            android:padding="16dp"
+            android:text="iShuttle"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textColor="@android:color/background_light"
+            android:textColorHint="@android:color/background_light"
+            android:textStyle="bold|italic"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/id_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="170dp"
-            android:layout_weight="1"
+            android:layout_marginTop="70dp"
+            android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_person_white_24dp"
             android:drawablePadding="12dp"
             android:drawableStart="@drawable/ic_person_white_24dp"
             android:ems="10"
-            android:fontFamily="sans-serif"
             android:hint="Username"
             android:inputType="textPersonName"
-            android:selectAllOnFocus="false"
-            android:singleLine="false"
-            android:textAlignment="viewStart"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-
-            android:textColorHint="@android:color/background_light"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            />
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+            android:textColorHint="@color/common_google_signin_btn_text_dark_pressed"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f9d7db" />
 
         <EditText
             android:id="@+id/id_regpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/id_username"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_phone_white_24dp"
             android:drawablePadding="12dp"
             android:drawableStart="@drawable/ic_phone_white_24dp"
             android:ems="10"
             android:hint="Phone Number"
             android:inputType="number"
-            android:lineSpacingExtra="10sp"
-            android:textColorHint="@android:color/background_light"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="false"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textColorHint="#fff"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f9d7db" />
 
         <EditText
             android:id="@+id/id_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/id_regpassword"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_lock_white_24dp"
             android:drawablePadding="12dp"
             android:drawableStart="@drawable/ic_lock_white_24dp"
@@ -77,9 +92,15 @@
             android:fontFamily="sans-serif"
             android:hint="Secret Code"
             android:inputType="number"
-            android:textColorHint="@android:color/background_light"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textColorHint="#fff"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f9d7db" />
 
         <Button
             android:id="@+id/register_btn"
@@ -88,24 +109,16 @@
             android:layout_below="@+id/id_code"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:background="@drawable/background_login"
+            android:background="@drawable/background_signup"
             android:onClick="RegisterClick"
+            android:padding="16dp"
             android:text="REGISTER"
-            android:textColor="@android:color/background_dark" />
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/id_regpassword"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="85dp"
-            android:fontFamily="serif"
-            android:text="iShuttle"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-            android:textColor="@android:color/background_light"
-            android:textStyle="bold|italic" />
 
-    </RelativeLayout>
+
+    </LinearLayout>
     </ScrollView>
 </RelativeLayout>

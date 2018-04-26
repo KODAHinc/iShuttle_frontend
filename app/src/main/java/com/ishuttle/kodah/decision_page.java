@@ -42,4 +42,8 @@ public class decision_page extends AppCompatActivity {
         finish();
         startActivity(new Intent(this,MapsActivity.class));
     }
+    public void LocateClick(View view){
+        finish();
+        startActivity(new Intent(this,locateKNUST.class));
+    }
 }
