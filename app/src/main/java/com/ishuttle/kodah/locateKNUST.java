@@ -169,10 +169,10 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
         mCurrent=mMap.addMarker(new MarkerOptions().position(Main_Administration).title("Main Administration").icon(BitmapDescriptorFactory.fromResource(R.mipmap.admin)));
 
         LatLng Paa_Joe=new LatLng(6.676764,-1.569983);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Paa_Joe).title("Paa Joe").icon(BitmapDescriptorFactory.fromResource(R.mipmap.paaJoe)));
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Paa_Joe).title("Paa Joe").icon(BitmapDescriptorFactory.fromResource(R.mipmap.paajoe)));
 
         LatLng Great_Hall=new LatLng(6.674664,-1.572461);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Great_Hall).title("Great Hall,\nMain Library right beside").icon(BitmapDescriptorFactory.fromResource(R.mipmap.greatHall)));
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Great_Hall).title("Great Hall,\nMain Library right beside").icon(BitmapDescriptorFactory.fromResource(R.mipmap.greathall)));
 
     }
 
