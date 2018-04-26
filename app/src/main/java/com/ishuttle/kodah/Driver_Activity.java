@@ -76,6 +76,8 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
         Brunei=new Location("");
         Commercial=new Location("");
+        Gaza=new Location("");
+
         Brunei.setLatitude(6.6702854);
         Brunei.setLongitude(-1.5743008);
 

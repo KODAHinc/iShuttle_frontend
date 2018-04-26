@@ -78,7 +78,7 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
             android:fontFamily="serif"
-            android:onClick="StudentClick"
+            android:onClick="LocateClick"
             android:text="locateKNUST"
             android:textColor="@android:color/holo_orange_light"
             android:textSize="24sp"
