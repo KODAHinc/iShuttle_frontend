@@ -209,21 +209,21 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
                 Geolocation=new String[2];
                 //Map<String,String> dataMap=new HashMap<>(1);
 
+                if(!ja.isNull(0)) {
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject jo = ja.getJSONObject(i);
+                        IDArray[i] = jo.getString("Drivers_id");
+                        UsernameArray[i] = jo.getString("Username");
+                        if ((IDArray[i].equals(DriverId))) {
+                            data = UsernameArray[i];
 
-                for (int i = 0; i < ja.length(); i++) {
-                    JSONObject jo = ja.getJSONObject(i);
-                    IDArray[i] = jo.getString("Drivers_id");
-                    UsernameArray[i] = jo.getString("Username");
-                    if ((IDArray[i].equals(DriverId))) {
-                        data = UsernameArray[i];
+
+                            return data;
+                        }
 
 
-                        return data;
                     }
-
-
                 }
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -243,11 +243,13 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
         @Override
         protected void onPostExecute(String data) {
-            String Name = null;
-            String Id=getIntent().getStringExtra("value");
+            if(!(data.isEmpty())) {
+                String Name = null;
+                String Id = getIntent().getStringExtra("value");
                 Name = "Mr. " + data;
 
-            NameTV.setText(Name);
+                NameTV.setText(Name);
+            }
 
 
         }

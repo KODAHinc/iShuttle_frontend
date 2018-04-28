@@ -185,11 +185,6 @@ public class log_in extends AppCompatActivity {
             }
         }
     }
-        /*dialog.setMessage("Login in...");
-            dialog.setIndeterminate(false);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setCancelable(false);
-            dialog.show();*/
 
 
     public boolean isNetworkAvailable(){
