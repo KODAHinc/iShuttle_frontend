@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen4">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:paddingBottom="15dp"
+            android:src="@drawable/warning"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:text="NOTE"
+            android:textAllCaps="false"
+            android:textColor="@color/text"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:textColor="@color/text"
+            android:text="You need good internet connection to use the app, the likelihood of the app crashing will be due to bad internet connection"
+            android:textStyle="normal"
+            android:textSize="25sp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+</RelativeLayout>
+

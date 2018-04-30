@@ -98,8 +98,6 @@ public class log_in extends AppCompatActivity {
 
 
             progressBar = new ProgressBar(log_in.this, null, android.R.attr.progressBarStyleLarge);
-            System.out.println(".............Here is my data.........");
-            System.out.println("ProgressBar called...");
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
             layout.addView(progressBar, params);
@@ -130,10 +128,6 @@ public class log_in extends AppCompatActivity {
                 result = sb.toString();
                 is.close();
                 br.close();
-                //System.out.println(".............Here is my data.........");
-                //System.out.println(result);
-                //PARse JSON DATA
-                //
 
                 JSONArray ja = new JSONArray(result);
 

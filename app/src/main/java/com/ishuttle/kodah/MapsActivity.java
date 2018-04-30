@@ -539,6 +539,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             animateMarker(end_location, mk[i]);
                     } else if (setC[i] == 1) {
                         mk[i].setPosition(start_location);
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
                         if((Double.parseDouble(Coordinates[0]))>=1) {
                             mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
                         }else{
@@ -565,6 +567,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             animateMarker(end_location, mk[i]);
                     } else if (setB[i] == 1) {
                         mk[i].setPosition(start_location);
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
                         if ((Double.parseDouble(Coordinates[0])) >= 1) {
                             mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
                         } else {
@@ -591,6 +595,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             animateMarker(end_location, mk[i]);
                     } else if (setA[i] == 1) {
                         mk[i].setPosition(start_location);
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
                         if((Double.parseDouble(Coordinates[0]))>=1) {
                             mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
                         }else{
@@ -747,7 +753,7 @@ if(listRoutes!=null) {
             break;
         }
         if (x == size - 1 && (destination.distanceTo(bus) < destination.distanceTo(loop_location))) {
-            aTime= (int) (((destination.distanceTo(bus))/536.44)*100);
+            aTime= 0;
             return aTime;
         }
     }

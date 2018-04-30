@@ -7,7 +7,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    android:background="@drawable/new_image">
+    android:background="@drawable/test_decision_page">
 
     <RelativeLayout
         android:layout_width="match_parent"
