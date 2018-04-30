@@ -95,7 +95,10 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
 
     @Override
     protected void onPostExecute(String result) {
+        if(result!=null){
+            Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
+        }
 
-        Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
+
     }
 }

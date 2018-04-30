@@ -48,12 +48,12 @@ public class decision_page extends AppCompatActivity {
         startActivity(new Intent(this,log_in.class));
     }
     public void StudentClick(View view){
-       // if(isInternetAccessible()) {
+        if(isNetworkAvailable()) {
             finish();
             startActivity(new Intent(this, MapsActivity.class));
-       // }else{
-           // Toast.makeText(decision_page.this,"No Internet Connection",Toast.LENGTH_LONG).show();
-       // }
+       }else{
+            Toast.makeText(decision_page.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+        }
     }
     public void LocateClick(View view){
         Toast.makeText(this, "Coming SOON!!", Toast.LENGTH_LONG).show();

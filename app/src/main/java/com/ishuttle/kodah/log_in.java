@@ -177,7 +177,7 @@ public class log_in extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(),"Wrong Password or You haven't registered,Click on the REGISTER BUTTON to register",Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(getApplicationContext(),"LOG IN Successful MR."+s,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"LOG IN Successful",Toast.LENGTH_LONG).show();
                 finish();
                 Intent intent=new Intent(new Intent(getApplicationContext(),Driver_Activity.class));
                 intent.putExtra("value",s);

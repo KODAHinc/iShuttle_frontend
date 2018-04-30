@@ -95,11 +95,15 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
     }
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
-        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
@@ -243,7 +247,7 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
         @Override
         protected void onPostExecute(String data) {
-            if(!(data.isEmpty())) {
+            if(!(data==null)) {
                 String Name = null;
                 String Id = getIntent().getStringExtra("value");
                 Name = "Mr. " + data;

@@ -6,7 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -75,7 +75,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -111,6 +113,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     List<String[]> Testing;
     Spinner routeSpinner;
     Marker mCurrent;
+    Marker[] mk=new Marker[20];
+    int[] setA=new int[20];
+    int[] setB=new int[20];
+    int[] setC=new int[20];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +128,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.support_simple_spinner_dropdown_item, SPINNERLIST);
-        routeSpinner = (Spinner) findViewById(R.id.map_spinner);
+        routeSpinner =  findViewById(R.id.map_spinner);
         routeSpinner.setAdapter(arrayAdapter);
 
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
 
+        Arrays.fill(setA,0);
+        Arrays.fill(setB,0);
+        Arrays.fill(setC,0);
 
 
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
 
@@ -311,24 +326,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             listRoutes=new ArrayList<>();
             NewLatLng=new ArrayList<>();
             LatLng[] newlatlng=null;
-            if(!(geoMap.isEmpty())) {
+            if(!(geoMap==null)) {
                 newlatlng = new LatLng[geoMap.size()];
             }
 
-            String[] list=new String[3];
+            String[] list;
             LatLng temp;
             Double lat;
             Double lng;
-            int i=0;
+            int i;
 
             try {
-                sleep(3000);
+                sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            mMap.clear();
+            //mMap.clear();
 
-            if(!(geoMap.isEmpty())) {
+            if(!(geoMap==null)) {
 
                 for (i = 0; i < geoMap.size(); i++) {
                     list = geoMap.get(i);
@@ -512,27 +527,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if ((listRoutes.get(i)).equals("C")) {
                 if (route.equals("C")) {
                     System.out.println("yellow icon displayed");
-                    mCurrent = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
-                    if (!start_location.equals(end_location))
-                        animateMarker(end_location, mCurrent);
+                    if (setC[i] == 0) {
+
+                        setC[i] = 1;
+                        if((Double.parseDouble(Coordinates[0]))>=1) {
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
+                        }else{
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: Shuttle is close by").icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
+                        }
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
+                    } else if (setC[i] == 1) {
+                        mk[i].setPosition(start_location);
+                        if((Double.parseDouble(Coordinates[0]))>=1) {
+                            mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
+                        }else{
+                            mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
+                        }
+                    }
+                }else if(setC[i]==1){
+                    mk[i].remove();
+                    setC[i]=0;
                 }
             }
             if ((listRoutes.get(i)).equals("B")) {
                 if (route.equals("B")) {
                     System.out.println("blue icon displayed");
-                    mCurrent = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
-                    if (!start_location.equals(end_location))
-                        animateMarker(end_location, mCurrent);
+                    if (setB[i] == 0) {
+
+                        setB[i] = 1;
+                        if((Double.parseDouble(Coordinates[0]))>=1) {
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
+                        }else{
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: Shuttle is close by").icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
+                        }
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
+                    } else if (setB[i] == 1) {
+                        mk[i].setPosition(start_location);
+                        if ((Double.parseDouble(Coordinates[0])) >= 1) {
+                            mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
+                        } else {
+                            mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
+                        }
+                    }
+                }else if(setB[i]==1){
+                    mk[i].remove();
+                    setB[i]=0;
                 }
             }
             if ((listRoutes.get(i)).equals("A")) {
                 if (route.equals("A")) {
                     System.out.println("red icon displayed");
-                    mCurrent = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0]).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
-                    if (!start_location.equals(end_location))
-                        animateMarker(end_location, mCurrent);
+                    if (setA[i] == 0) {
+
+                        setA[i] = 1;
+                        if((Double.parseDouble(Coordinates[0]))>=1) {
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
+                        }else{
+                            mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: Shuttle is close by").icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
+                        }
+                        if (!start_location.equals(end_location))
+                            animateMarker(end_location, mk[i]);
+                    } else if (setA[i] == 1) {
+                        mk[i].setPosition(start_location);
+                        if((Double.parseDouble(Coordinates[0]))>=1) {
+                            mk[i].setTitle("Arrival Time of Shuttle: " + Coordinates[0] + "mins");
+                        }else{
+                            mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
+                        }
+                    }
+                }else if(setA[i]==1){
+                    mk[i].remove();
+                    setA[i]=0;
                 }
             }
+
         }
     }
 
@@ -556,9 +626,9 @@ class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
                 urlc.connect();
 
                 if(urlc.getResponseCode()==200){
-                    /*Snackbar snackbar=Snackbar.make(getWindow().getDecorView().getRootView(),"User Online",Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar=Snackbar.make(getWindow().getDecorView().getRootView(),"User Online",Snackbar.LENGTH_SHORT);
                     View view=snackbar.getView();
-                    view.setBackgroundColor(ContextCompat.getColor(getAc));*/
+                    view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.green));
                     return true;
                 }
 
@@ -569,6 +639,9 @@ class isInternetAccessibleThread extends AsyncTask<Void,Void,Boolean>{
         }else{
             Log.e("NetState","Internet not Available!");
         }
+        Snackbar snackbar=Snackbar.make(getWindow().getDecorView().getRootView(),"No Connection",Snackbar.LENGTH_SHORT);
+        //View view=snackbar.getView();
+        //view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.red));
         return false;
     }
 
@@ -595,69 +668,69 @@ public int getArrivalTime(Location bus,Location destination,String index){
     int end=0;
     int aTime=0;
     int begin=0;
-
-    switch(listRoutes.get(i)){
+if(listRoutes!=null) {
+    switch (listRoutes.get(i)) {
         case "C":
-            Path=new Double[8][2];
-            size=8;
+            Path = new Double[8][2];
+            size = 8;
 
-            Path[0][0]= 6.682836;
-            Path[0][1]= -1.576970;
-            Path[1][0]= 6.682376;
-            Path[1][1]= -1.576931;
-            Path[2][0]= 6.681777;
-            Path[2][1]= -1.575653;
+            Path[0][0] = 6.682836;
+            Path[0][1] = -1.576970;
+            Path[1][0] = 6.682376;
+            Path[1][1] = -1.576931;
+            Path[2][0] = 6.681777;
+            Path[2][1] = -1.575653;
             Path[3][0] = 6.679165;
-            Path[3][1]= -1.572579;
-            Path[4][0]=6.678509;
-            Path[4][1]=-1.570892;
-            Path[5][0]=6.675119;
-            Path[5][1]=-1.570731;
-            Path[6][0]=6.6748622;
-            Path[6][1]=-1.5673230;
-            Path[7][0]=6.6682733;
-            Path[7][1]=-1.5670126;
+            Path[3][1] = -1.572579;
+            Path[4][0] = 6.678509;
+            Path[4][1] = -1.570892;
+            Path[5][0] = 6.675119;
+            Path[5][1] = -1.570731;
+            Path[6][0] = 6.6748622;
+            Path[6][1] = -1.5673230;
+            Path[7][0] = 6.6682733;
+            Path[7][1] = -1.5670126;
             break;
         case "B":
-            Path=new Double[6][2];
-            size=6;
+            Path = new Double[6][2];
+            size = 6;
 
-            Path[0][0]= 6.6703300;
-            Path[0][1]= -1.5743219;
+            Path[0][0] = 6.6703300;
+            Path[0][1] = -1.5743219;
             Path[1][0] = 6.6725768;
-            Path[1][1]= -1.5734388;
-            Path[2][0]=6.6751033;
-            Path[2][1]=-1.5722526;
-            Path[3][0]=6.675119;
-            Path[3][1]=-1.570731;
-            Path[4][0]=6.6748622;
-            Path[4][1]=-1.5673230;
-            Path[5][0]=6.6682733;
-            Path[5][1]=-1.5670126;
+            Path[1][1] = -1.5734388;
+            Path[2][0] = 6.6751033;
+            Path[2][1] = -1.5722526;
+            Path[3][0] = 6.675119;
+            Path[3][1] = -1.570731;
+            Path[4][0] = 6.6748622;
+            Path[4][1] = -1.5673230;
+            Path[5][0] = 6.6682733;
+            Path[5][1] = -1.5670126;
 
             break;
         case "A":
-            Path=new Double[9][2];
-            size=9;
+            Path = new Double[9][2];
+            size = 9;
 
-            Path[0][0]= 6.687655;
-            Path[0][1]= -1.556916;
-            Path[1][0]= 6.686565;
-            Path[1][1]= -1.557055;
-            Path[2][0]= 6.684714;
-            Path[2][1]= -1.558249;
-            Path[3][0]= 6.685548;
-            Path[3][1]= -1.560698;
+            Path[0][0] = 6.687655;
+            Path[0][1] = -1.556916;
+            Path[1][0] = 6.686565;
+            Path[1][1] = -1.557055;
+            Path[2][0] = 6.684714;
+            Path[2][1] = -1.558249;
+            Path[3][0] = 6.685548;
+            Path[3][1] = -1.560698;
             Path[4][0] = 6.681832;
-            Path[4][1]= -1.562225;
-            Path[5][0]=6.680689;
-            Path[5][1]=-1.564802;
-            Path[6][0]=6.677267;
-            Path[6][1]=-1.567183;
-            Path[7][0]=6.6748622;
-            Path[7][1]=-1.5673230;
-            Path[8][0]=6.6682733;
-            Path[8][1]=-1.5670126;
+            Path[4][1] = -1.562225;
+            Path[5][0] = 6.680689;
+            Path[5][1] = -1.564802;
+            Path[6][0] = 6.677267;
+            Path[6][1] = -1.567183;
+            Path[7][0] = 6.6748622;
+            Path[7][1] = -1.5673230;
+            Path[8][0] = 6.6682733;
+            Path[8][1] = -1.5670126;
             break;
         default:
 
@@ -665,63 +738,65 @@ public int getArrivalTime(Location bus,Location destination,String index){
     }
 
     //checking if bus is d closest
-    for(int x=1;x<size;x++){
+    for (int x = 1; x < size; x++) {
+        assert Path != null;
         loop_location.setLatitude(Path[x][0]);
         loop_location.setLongitude(Path[x][1]);
 
-        if(destination.distanceTo(loop_location)<destination.distanceTo(bus)){
+        if (destination.distanceTo(loop_location) < destination.distanceTo(bus)) {
             break;
         }
-        if(x==size-1 && (destination.distanceTo(bus)<destination.distanceTo(loop_location))){
-            aTime=1;
+        if (x == size - 1 && (destination.distanceTo(bus) < destination.distanceTo(loop_location))) {
+            aTime= (int) (((destination.distanceTo(bus))/536.44)*100);
             return aTime;
         }
     }
     //if bus not closest;checks for which saved location is closer to bus
     loc.setLatitude(Path[0][0]);
     loc.setLongitude(Path[0][1]);
-    for(int x=1;x<size;x++){
-        loop_location=new Location("");
+    for (int x = 1; x < size; x++) {
+        loop_location = new Location("");
         loop_location.setLatitude(Path[x][0]);
         loop_location.setLongitude(Path[x][1]);
 
-        if(bus.distanceTo(loop_location)<bus.distanceTo(loc)){
-            begin=x;
-            loc=new Location("");
+        if (bus.distanceTo(loop_location) < bus.distanceTo(loc)) {
+            begin = x;
+            loc = new Location("");
             loc.setLatitude(loop_location.getLatitude());
             loc.setLongitude(loop_location.getLongitude());
 
         }
     }
-    aTime=aTime+1;
+    aTime = aTime + 1;
     //checks for which saved location is closest to destination
-    loc=new Location("");
+    loc = new Location("");
     loc.setLatitude(Path[0][0]);
     loc.setLongitude(Path[0][1]);
-    for(int x=1;x<size;x++){
-        loop_location=new Location("");
+    for (int x = 1; x < size; x++) {
+        loop_location = new Location("");
         loop_location.setLatitude(Path[x][0]);
         loop_location.setLongitude(Path[x][1]);
 
-        if(destination.distanceTo(loop_location)<destination.distanceTo(loc)){
-            end=x;
-            loc=new Location("");
+        if (destination.distanceTo(loop_location) < destination.distanceTo(loc)) {
+            end = x;
+            loc = new Location("");
             loc.setLatitude(loop_location.getLatitude());
             loc.setLongitude(loop_location.getLongitude());
 
         }
     }
     //Assuming each distance to be 1 min apart;loop sum through begin to end
-    if(begin<end){
-        for(int x=begin;x<end+1;x++){
+    if (begin < end) {
+        for (int x = begin; x < end + 1; x++) {
             aTime++;
         }
     }
-    if(begin>end){
-        for(int x=begin;x>end-1;x--){
+    if (begin > end) {
+        for (int x = begin; x > end - 1; x--) {
             aTime++;
         }
     }
+}
 
     return aTime;
 }
