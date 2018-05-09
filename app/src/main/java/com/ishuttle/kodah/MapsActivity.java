@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -87,6 +88,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import static android.location.LocationManager.NETWORK_PROVIDER;
 import static java.lang.Thread.sleep;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -95,28 +97,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     GoogleApiClient googleApiClient;
     Location mLastlocation;
     LocationRequest mLocationRequest;
-    InputStream is=null;
-    String line=null;
-    String result=null;
+    InputStream is = null;
+    String line = null;
+    String result = null;
     String[] SPINNERLIST = {"C-Commercial to Business School", "B-Brunei to Business School", "A-Gaza to Business School"};
-    String[] NewLatArray,NewLngArray,LatArray,LngArray,RouteArray;
+    String[] NewLatArray, NewLngArray, LatArray, LngArray, RouteArray;
     List<LatLng> OldgeoCordinates;
-    List<Map<String,LatLng>> NewgeoCordinates;
-    Map<String,LatLng> geoCordinates;
-    Map<Integer,Map<LatLng,String>> Extract;
+    List<Map<String, LatLng>> NewgeoCordinates;
+    Map<String, LatLng> geoCordinates;
+    Map<Integer, Map<LatLng, String>> Extract;
     List<LatLng> NewLatLng;
 
-    LatLng currentLocation,index;
-    LatLng[] oldlatLng=null;
+    LatLng currentLocation, index;
+    LatLng[] oldlatLng = null;
 
     List<String> listRoutes;
     List<String[]> Testing;
     Spinner routeSpinner;
-    Marker mCurrent;
-    Marker[] mk=new Marker[20];
-    int[] setA=new int[20];
-    int[] setB=new int[20];
-    int[] setC=new int[20];
+    LocationManager locationManager;
+    Marker[] mk = new Marker[20];
+    int[] setA = new int[20];
+    int[] setB = new int[20];
+    int[] setC = new int[20];
+    ArrayList check=new ArrayList();
 
 
     @Override
@@ -130,17 +133,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.support_simple_spinner_dropdown_item, SPINNERLIST);
-        routeSpinner =  findViewById(R.id.map_spinner);
+        routeSpinner = findViewById(R.id.map_spinner);
         routeSpinner.setAdapter(arrayAdapter);
 
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
 
-        Arrays.fill(setA,0);
-        Arrays.fill(setB,0);
-        Arrays.fill(setC,0);
+        Arrays.fill(setA, 0);
+        Arrays.fill(setB, 0);
+        Arrays.fill(setC, 0);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+/*        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000,
+                10, (LocationListener) this);*/
 
+        check.add("false");
 
     }
 
@@ -170,7 +177,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
 
-
     }
     protected synchronized  void buildGoogleApiClient(){
         googleApiClient=new GoogleApiClient.Builder(this)
@@ -186,11 +192,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLastlocation=location;
 
         currentLocation=new LatLng(location.getLatitude(),location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        if(check.get(0).equals("false")) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            check=new ArrayList();
+            check.add("true");
+        }
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
         if(oldlatLng!=null)
         new isInternetAccessibleThread().execute();
+
 
     }
 
@@ -207,6 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return;
         }
+
+
          LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
         //new LocationTask((LocationTask.AsyncResponse) this).execute();
@@ -215,8 +228,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void processFinish(LatLng[] output) {
                 oldlatLng=output;
-                //System.out.println("oldlatLng0="+ oldlatLng[0]);
-                //System.out.println("oldlatLng1="+ oldlatLng[1]);
+
             }
 
         });
@@ -244,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             URL url;
 
             try {
-                url = new URL("https://kodahinc.000webhostapp.com/getlocation.php");
+                url = new URL("http://wigsbydebs.xyz/getlocation.php");
 
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
@@ -299,9 +311,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         System.out.println("testArray(" + i + ")=" + testArray[0]);
 
                         Testing.add(testArray);
-                        //OldgeoCordinates.add(new LatLng(Double.parseDouble(LatArray[i]), Double.parseDouble(LngArray[i])));
-                        //geoCordinates.put(RouteArray[i],new LatLng(Double.parseDouble(LatArray[i]),Double.parseDouble(LngArray[i])));
-                        //NewgeoCordinates.add(geoCordinates);
 
 
                     }
@@ -674,7 +683,7 @@ public int getArrivalTime(Location bus,Location destination,String index){
     int end=0;
     int aTime=0;
     int begin=0;
-if(listRoutes!=null) {
+if(listRoutes.size()!=0) {
     switch (listRoutes.get(i)) {
         case "C":
             Path = new Double[8][2];

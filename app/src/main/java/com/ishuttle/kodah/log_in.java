@@ -112,7 +112,7 @@ public class log_in extends AppCompatActivity {
             String password = strings[1];
             try {
 
-                URL url = new URL("https://kodahinc.000webhostapp.com/testlogin.php");
+                URL url = new URL("http://wigsbydebs.xyz/login.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
                 is = new BufferedInputStream(con.getInputStream());

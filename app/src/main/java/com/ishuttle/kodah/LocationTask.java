@@ -51,7 +51,7 @@ public class LocationTask extends AsyncTask<Void,Void,LatLng[]> {
         URL url;
 
         try {
-            url = new URL("https://kodahinc.000webhostapp.com/getlocation.php");
+            url = new URL("http://wigsbydebs.xyz/getlocation.php");
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");

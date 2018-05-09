@@ -15,13 +15,13 @@
         android:layout_weight=".3">
 
         <ImageView
-            android:layout_width="150dp"
+            android:layout_width="125dp"
             android:layout_height="150dp"
-            android:scaleType="center"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="58dp"
             android:background="@drawable/knust"
+            android:scaleType="center"
             android:visibility="visible" />
     </RelativeLayout>
 
@@ -30,6 +30,9 @@
         android:id="@+id/relative1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_weight=".5">
 
         <Button
@@ -41,7 +44,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="25dp"
             android:background="@drawable/background_login"
-            android:fontFamily="serif"
+            android:fontFamily="casual"
             android:onClick="DriverClick"
             android:text="Driver"
             android:textColor="@android:color/background_dark"
@@ -64,7 +67,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
-            android:fontFamily="serif"
+            android:fontFamily="casual"
             android:onClick="StudentClick"
             android:text="Student"
             android:textColor="@android:color/holo_red_light"
@@ -86,7 +89,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_login"
-            android:fontFamily="serif"
+            android:fontFamily="casual"
             android:onClick="LocateClick"
             android:text="locateKNUST"
             android:textColor="@android:color/holo_orange_light"

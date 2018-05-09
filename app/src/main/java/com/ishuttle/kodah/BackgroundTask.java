@@ -24,8 +24,8 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
     }
     @Override
     protected String doInBackground(String... params) {
-        String reg_url="http://kodahinc.000webhostapp.com/register.php";
-        String geo_url="http://kodahinc.000webhostapp.com/driverlocation.php";
+        String reg_url="http://wigsbydebs.xyz/register.php";
+        String geo_url="http://wigsbydebs.xyz/driverlocation.php";
 
         String method=params[0];
         if(method.equals("register")){
