@@ -1,8 +1,12 @@
 package com.ishuttle.kodah;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,6 +35,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 
 public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -34,6 +46,8 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
     LocationRequest mLocationRequest;
     LatLng currentLocation;
     Marker mCurrent;
+    ArrayList check=new ArrayList();
+    Point p;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +57,22 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        check.add("false");
+        Button btn_show = (Button) findViewById(R.id.map_button);
+        btn_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                //Open popup window
+                if (p != null)
+                    showPopup(locateKNUST.this, p);
+            }
+        });
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -93,8 +111,13 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
         mLastlocation=location;
 
         currentLocation=new LatLng(location.getLatitude(),location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+
+        if(check.get(0).equals("false")) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            check=new ArrayList();
+            check.add("true");
+        }
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
         //showLocation(mMap);
     }
@@ -114,65 +137,37 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
-        LatLng Pharmacy=new LatLng(6.674253,-1.566354);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Pharmacy).title("Pharmacy Building\nBUILDINGS AROUND\n\nCollege of Science\nChemistry Lab").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pharmacy)));
+        LatLng Petroleum=new LatLng(6.672822,-1.564204);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Petroleum).title("Petroleum Building").icon(BitmapDescriptorFactory.fromResource(R.mipmap.petroleum)));
 
-        LatLng UITS=new LatLng(6.675671,-1.567062);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(UITS).title("University Information Technology Services").icon(BitmapDescriptorFactory.fromResource(R.mipmap.uits)));
+        LatLng Auditorium=new LatLng(6.672523,-1.564919);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Auditorium).title("Engineering Auditorium").icon(BitmapDescriptorFactory.fromResource(R.mipmap.auditorium)));
 
-        LatLng IDL=new LatLng(6.675585,-1.567534);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(IDL).title("Institute of Distant Learning").icon(BitmapDescriptorFactory.fromResource(R.mipmap.idl)));
+        LatLng Vodafone=new LatLng(6.672789,-1.565525);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Vodafone).title("Vodafone Buildig").icon(BitmapDescriptorFactory.fromResource(R.mipmap.vodafone_cafe)));
 
-        LatLng Engineering_Auditorium=new LatLng(6.672822,-1.565020);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Engineering_Auditorium).title("Engineering_Auditorium\nBUILDINGS AROUND\n\nVodafone Cafe\nLecturer's Offices\nEngineering Labs").icon(BitmapDescriptorFactory.fromResource(R.mipmap.engineering_auditorium)));
+        LatLng Airplane=new LatLng(6.673274,-1.565526);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Airplane).title("Airplane Building").icon(BitmapDescriptorFactory.fromResource(R.mipmap.airplane_building)));
 
-        LatLng Petroleum_Building=new LatLng(6.672920,-1.563536);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Petroleum_Building).title("Petroleum_Building\nBUILDINGS AROUND\n\n Engineering Gate").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pb)));
+        LatLng N_Block=new LatLng(6.674261,-1.565634);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(N_Block).title("N Block").icon(BitmapDescriptorFactory.fromResource(R.mipmap.n_building)));
+        LatLng Lecture=new LatLng(6.673694,-1.565318);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Lecture).title("Lecture Theatre").icon(BitmapDescriptorFactory.fromResource(R.mipmap.lecture)));
 
-        LatLng Coke_Stand=new LatLng(6.674429,-1.565562);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Coke_Stand).title("Coke_Stand\nBUILDINGS AROUND\n\nDepartment of languages\nAgric faculty ").icon(BitmapDescriptorFactory.fromResource(R.mipmap.coke)));
+        LatLng Science=new LatLng(6.673190,-1.566999);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Science).title("College of Science").icon(BitmapDescriptorFactory.fromResource(R.mipmap.science)));
 
-        LatLng SMS_canteen=new LatLng(6.673055,-1.568180);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(SMS_canteen).title("SMS Canteen").icon(BitmapDescriptorFactory.fromResource(R.mipmap.canteen)));
+        LatLng Business=new LatLng(6.668800,-1.568521);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Business).title("School of Business").icon(BitmapDescriptorFactory.fromResource(R.mipmap.business)));
 
-        LatLng Faculty_of_Arts=new LatLng(6.668273,-1.565847);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Faculty_of_Arts).title("Faculty of Arts\nPLACES AROUND\n\nCommercial Area\nLaw Faculty").icon(BitmapDescriptorFactory.fromResource(R.mipmap.arts)));
+        LatLng Health_science=new LatLng(6.672301,-1.568290);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Health_science).title("College of Health Sciences").icon(BitmapDescriptorFactory.fromResource(R.mipmap.health_science)));
 
-        LatLng School_of_Business=new LatLng(6.668817,-1.567885);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(School_of_Business).title("School of Business").icon(BitmapDescriptorFactory.fromResource(R.mipmap.business)));
+        LatLng Humanities=new LatLng(6.674551,-1.565660);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Humanities).title("College of Health Sciences").icon(BitmapDescriptorFactory.fromResource(R.mipmap.socioso)));
 
-        LatLng CCB=new LatLng(6.675973,-1.565114);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(CCB).title("CCB\nBUILDINGS AROUND\n\nSFED\nAyeduase Gate").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ccb)));
-
-        LatLng Republic_Hall=new LatLng(6.678277,-1.565114);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Republic_Hall).title("Republic Hall").icon(BitmapDescriptorFactory.fromResource(R.mipmap.republic)));
-
-        LatLng Katanga_Hall=new LatLng(6.672408,-1.563582);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Katanga_Hall).title("Katanga Hall").icon(BitmapDescriptorFactory.fromResource(R.mipmap.katanga)));
-
-        LatLng Brunei=new LatLng(6.69765,-1.575760);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Brunei).title("GUSS Hostels:Brunei").icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei)));
-
-        LatLng Africa_Hall=new LatLng(6.680589,-1.575540);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Africa_Hall).title("Africa Hall\nBUILDINGS AROUND\n\nAU Gardens").icon(BitmapDescriptorFactory.fromResource(R.mipmap.africa)));
-
-        LatLng Unity_Hall=new LatLng(6.679864,-1.571742);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Unity_Hall).title("Unity Hall").icon(BitmapDescriptorFactory.fromResource(R.mipmap.unity)));
-
-        LatLng Queens_Hall=new LatLng(6.677083,-1.574103);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Queens_Hall).title("Queens Hall").icon(BitmapDescriptorFactory.fromResource(R.mipmap.queens)));
-
-        LatLng Independent_Hall=new LatLng(6.676881,-1.571378);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Independent_Hall).title("Indece hall").icon(BitmapDescriptorFactory.fromResource(R.mipmap.indece)));
-
-        LatLng Main_Administration=new LatLng(6.674707,-1.569983);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Main_Administration).title("Main Administration").icon(BitmapDescriptorFactory.fromResource(R.mipmap.admin)));
-
-        LatLng Paa_Joe=new LatLng(6.676764,-1.569983);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Paa_Joe).title("Paa Joe").icon(BitmapDescriptorFactory.fromResource(R.mipmap.paajoe)));
-
-        LatLng Great_Hall=new LatLng(6.674664,-1.572461);
-        mCurrent=mMap.addMarker(new MarkerOptions().position(Great_Hall).title("Great Hall,\nMain Library right beside").icon(BitmapDescriptorFactory.fromResource(R.mipmap.greathall)));
+        LatLng Agriculture=new LatLng(6.675349,-1.566429);
+        mCurrent=mMap.addMarker(new MarkerOptions().position(Agriculture).title("College of Agriculture").icon(BitmapDescriptorFactory.fromResource(R.mipmap.agriculture)));
 
     }
 
@@ -184,6 +179,64 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    // Get the x and y position after the button is draw on screen
+// (It's important to note that we can't get the position in the onCreate(),
+// because at that stage most probably the view isn't drawn yet, so it will return (0, 0))
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+        int[] location = new int[2];
+        Button button = (Button) findViewById(R.id.map_button);
+
+        // Get the x, y location and store it in the location[] array
+        // location[0] = x, location[1] = y.
+        button.getLocationOnScreen(location);
+
+        //Initialize the Point with x, and y positions
+        p = new Point();
+        p.x = location[0];
+        p.y = location[1];
+    }
+
+    // The method that displays the popup.
+    private void showPopup(final Activity context, Point p) {
+        int popupWidth = 200;
+        int popupHeight = 150;
+
+        // Inflate the popup_layout.xml
+        LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
+        LayoutInflater layoutInflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = layoutInflater.inflate(R.layout.pop_up, viewGroup);
+
+        // Creating the PopupWindow
+        final PopupWindow popup = new PopupWindow(context);
+        popup.setContentView(layout);
+        popup.setWidth(popupWidth);
+        popup.setHeight(popupHeight);
+        popup.setFocusable(true);
+
+        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
+        int OFFSET_X = 30;
+        int OFFSET_Y = 30;
+
+        // Clear the default translucent background
+        popup.setBackgroundDrawable(new BitmapDrawable());
+
+        // Displaying the popup at the specified location, + offsets.
+        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+
+        // Getting a reference to Close button, and close the popup when clicked.
+        Button close = (Button) layout.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+            }
+        });
     }
 
 }

@@ -70,7 +70,8 @@ public class decision_page extends AppCompatActivity {
         }
     }
     public void LocateClick(View view){
-        Toast.makeText(this, "Coming SOON!!", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Coming SOON!!", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this,locateKNUST.class));
 
     }
 

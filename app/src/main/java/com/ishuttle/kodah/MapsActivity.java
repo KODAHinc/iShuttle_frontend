@@ -142,7 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Arrays.fill(setB, 0);
         Arrays.fill(setC, 0);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 /*        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000,
                 10, (LocationListener) this);*/
@@ -335,7 +334,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             listRoutes=new ArrayList<>();
             NewLatLng=new ArrayList<>();
             LatLng[] newlatlng=null;
-            if(!(geoMap==null)) {
+            if(!(geoMap.size()==0)) {
                 newlatlng = new LatLng[geoMap.size()];
             }
 
@@ -352,7 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             //mMap.clear();
 
-            if(!(geoMap==null)) {
+            if(!(geoMap.size()==0)) {
 
                 for (i = 0; i < geoMap.size(); i++) {
                     list = geoMap.get(i);
