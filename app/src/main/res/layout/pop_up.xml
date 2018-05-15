@@ -5,8 +5,9 @@
     android:layout_width="wrap_content"
     android:id="@+id/popup"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:scrollbars="vertical">
+    android:orientation="vertical">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
             android:clickable="true"
             android:text="CLOSE"
             android:id="@+id/close"
+            android:onClick="onClose"
             android:background="@color/brown"/>
     </LinearLayout>
 
