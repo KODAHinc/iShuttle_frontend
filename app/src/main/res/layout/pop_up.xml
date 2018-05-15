@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:id="@+id/popup"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="CLOSE"
+            android:id="@+id/close"
+            android:background="@color/brown"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:text="MARKER"
+            android:layout_weight=".2"
+            />
+
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:text="LOCATION       "
+            android:layout_weight=".3"
+            />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="PLACES AROUND " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView2"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/business"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="School of Business       " />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Disability and Rehabilitation Studies,Arts and Publishing,Sarah Mensah Auditorium,School of Graduate Studies " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView8"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".2"
+            android:background="@mipmap/petroleum" />
+
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Petroleum Building       " />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="PETROLEUM BUILDING::Provost Office(4TH Floor),PB 001-012,PB 101-112,PB 201-212,PB 301-312" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView23"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/auditorium"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Engineering/Kumapley Auditorium       " />
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="NAF2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView36"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/n_building"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView37"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="N BLock       " />
+
+        <TextView
+            android:id="@+id/textView38"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="N1,N2,Reading Lounge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView30"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/airplane_building"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Airplane BLock       " />
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Collge Library,202,203,302,304" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView33"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/lecture"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView34"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Lecture Theatre     " />
+
+        <TextView
+            android:id="@+id/textView35"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Lecture Theatre,Room A,Room B,Levine Hall-Beside" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView26"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/vodafone_cafe"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Vodafone Block       " />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Vodafone Cafe,A110,Autotronics Lab,GIS Lab,TA's Office,E-Class" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView11"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/science"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="College of Science       " />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Math Department,Optometry,Ground Floor,First Floor,Second Floor,Third Floor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView14"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/health_science"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="College of Health Science       " />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="Faculty of Allied Health,Sonography,Nursing,Midwifery,Scool of Medical Science,Medilab " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView17"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/socioso"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="College of Humanities and Social Sciences       " />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="English,Politics,Culture and Tourism,Religious Studies,Geography,Economics,Social Work,Sociology  " />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/textView20"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/agriculture"
+            android:layout_weight=".2"
+            />
+
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="Faculty of Agriculture       " />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="agric classrooms,Buildings close by:CCB,SFED  " />
+    </LinearLayout>
+
+
+</LinearLayout>
