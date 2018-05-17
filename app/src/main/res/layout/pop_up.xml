@@ -21,6 +21,13 @@
             android:onClick="onClose"
             android:background="@color/brown"/>
     </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -382,6 +389,8 @@
             android:layout_weight=".5"
             android:text="agric classrooms,Buildings close by:CCB,SFED  " />
     </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+    </LinearLayout>
 
 
-</LinearLayout>

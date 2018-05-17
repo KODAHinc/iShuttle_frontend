@@ -129,7 +129,7 @@ public class locateKNUST extends FragmentActivity implements OnMapReadyCallback,
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
-        LatLng Petroleum=new LatLng(6.672822,-1.564204);
+        LatLng Petroleum=new LatLng(6.673221,-1.564364);
         mCurrent=mMap.addMarker(new MarkerOptions().position(Petroleum).title("Petroleum Building").icon(BitmapDescriptorFactory.fromResource(R.mipmap.petroleum)));
 
         LatLng Auditorium=new LatLng(6.672523,-1.564919);

@@ -1,9 +1,12 @@
 package com.ishuttle.kodah;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,6 +21,14 @@ import java.net.URLEncoder;
 
 public class BackgroundTask extends AsyncTask<String,Void,String>{
     Context ctx;
+    public interface AsyncResponse{
+        void processFinish(String output);
+    }
+    public BackgroundTask.AsyncResponse delegate = null;
+
+    public BackgroundTask(BackgroundTask.AsyncResponse delegate){
+        this.delegate = delegate;
+    }
     BackgroundTask(Context ctx){
 
         this.ctx=ctx;
@@ -95,8 +106,11 @@ public class BackgroundTask extends AsyncTask<String,Void,String>{
 
     @Override
     protected void onPostExecute(String result) {
+        String status;
         if(result!=null){
-            Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
+            status="successful";
+            //Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
+            delegate.processFinish(status);
         }
 
 

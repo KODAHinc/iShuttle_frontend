@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Register extends AppCompatActivity {
     EditText ET_username,ET_regpassword,ET_code;
     String username,regpassword,secret_code;
@@ -49,12 +51,18 @@ public class Register extends AppCompatActivity {
             String method="register";
 
 
+            BackgroundTask backgroundTask= new BackgroundTask(new BackgroundTask.AsyncResponse() {
+                @Override
+                public void processFinish(String output) {
+                    if(output!=null){
+                        RegistrationSuccess();
+                    }
+                }
 
-            BackgroundTask backgroundTask=new BackgroundTask(this);
+            });
             backgroundTask.execute(method,username,regpassword);
 
-            finish();
-            startActivity(new Intent(this,log_in.class));
+
 
 
         }else{
@@ -62,6 +70,12 @@ public class Register extends AppCompatActivity {
             Toast.makeText(this,"Wrong Secret code entered",Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    private void RegistrationSuccess(){
+        Toast.makeText(this,"Registration Successful",Toast.LENGTH_LONG).show();
+        finish();
+        startActivity(new Intent(this,log_in.class));
     }
 
 }

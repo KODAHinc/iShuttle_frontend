@@ -45,7 +45,7 @@ import android.widget.TextView;
         dotsLayout=(LinearLayout)findViewById(R.id.layoutDots);
         skip=(Button)findViewById(R.id.btn_skip);
         next=(Button)findViewById(R.id.btn_next);
-        layouts=new int[]{R.layout.activity_intro_slide,R.layout.activity_intro_slide_two,R.layout.activty_intro_slide_three,R.layout.activity_intro_slide_four};
+        layouts=new int[]{R.layout.activity_intro_slide,R.layout.activity_intro_slide_two,R.layout.activty_intro_slide_three,R.layout.activity_intro_slide_four,R.layout.activity_intro_slide_five,R.layout.activity_intro_slide_six};
         addBottomDots(0);
         changeStatusBarColor();
         viewPagerAdapter= new ViewPagerAdapter();

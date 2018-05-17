@@ -2,6 +2,7 @@ package com.ishuttle.kodah;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -258,5 +260,10 @@ public class Driver_Activity extends AppCompatActivity implements  GoogleApiClie
 
         }
 
+    }
+
+    public void onLogOutClick(View view){
+        finish();
+        startActivity(new Intent(this,decision_page.class));
     }
 }

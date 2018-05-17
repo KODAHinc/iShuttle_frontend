@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -116,9 +117,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Spinner routeSpinner;
     LocationManager locationManager;
     Marker[] mk = new Marker[20];
-    int[] setA = new int[20];
+    /*int[] setA = new int[20];
     int[] setB = new int[20];
     int[] setC = new int[20];
+    */
+    int[] set = new int[20];
+
     ArrayList check=new ArrayList();
 
 
@@ -138,9 +142,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder().permitNetwork().build()));
 
-        Arrays.fill(setA, 0);
+        /*Arrays.fill(setA, 0);
         Arrays.fill(setB, 0);
-        Arrays.fill(setC, 0);
+        Arrays.fill(setC, 0);*/
+        Arrays.fill(set, 0);
 
 
 /*        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000,
@@ -148,9 +153,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         check.add("false");
 
+
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -434,7 +443,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
     //Method for finding bearing between two points
     private float getBearing(LatLng begin, LatLng end) {
         double lat = Math.abs(begin.latitude - end.latitude);
@@ -501,7 +509,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             loc.setLatitude(end_location.latitude);
             loc.setLongitude(end_location.longitude);
 
-            //TODO:Try to use road api and polyline to implement car road movement
             float distance = mLastlocation.distanceTo(loc);
 
 
@@ -532,9 +539,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if ((listRoutes.get(i)).equals("C")) {
                 if (route.equals("C")) {
                     System.out.println("yellow icon displayed");
-                    if (setC[i] == 0) {
+                    if (set[i] == 0) {
 
-                        setC[i] = 1;
+                        set[i] = 1;
                         if((Double.parseDouble(Coordinates[0]))>=1) {
                             mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus)));
                         }else{
@@ -542,8 +549,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
-                    } else if (setC[i] == 1) {
+                    } else if (set[i] == 1) {
                         mk[i].setPosition(start_location);
+                        mk[i].setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.commercial_bus));
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
                         if((Double.parseDouble(Coordinates[0]))>=1) {
@@ -552,17 +560,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
                         }
                     }
-                }else if(setC[i]==1){
+                }else if(set[i]==1){
                     mk[i].remove();
-                    setC[i]=0;
+                    set[i]=0;
                 }
             }
             if ((listRoutes.get(i)).equals("B")) {
                 if (route.equals("B")) {
                     System.out.println("blue icon displayed");
-                    if (setB[i] == 0) {
+                    if (set[i] == 0) {
 
-                        setB[i] = 1;
+                        set[i] = 1;
                         if((Double.parseDouble(Coordinates[0]))>=1) {
                             mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus)));
                         }else{
@@ -570,8 +578,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
-                    } else if (setB[i] == 1) {
+                    } else if (set[i] == 1) {
                         mk[i].setPosition(start_location);
+                        mk[i].setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.brunei_bus));
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
                         if ((Double.parseDouble(Coordinates[0])) >= 1) {
@@ -580,17 +589,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
                         }
                     }
-                }else if(setB[i]==1){
+                }else if(set[i]==1){
                     mk[i].remove();
-                    setB[i]=0;
+                    set[i]=0;
                 }
             }
             if ((listRoutes.get(i)).equals("A")) {
                 if (route.equals("A")) {
                     System.out.println("red icon displayed");
-                    if (setA[i] == 0) {
+                    if (set[i] == 0) {
 
-                        setA[i] = 1;
+                        set[i] = 1;
                         if((Double.parseDouble(Coordinates[0]))>=1) {
                             mk[i] = mMap.addMarker(new MarkerOptions().position(start_location).title("Arrival Time of Shuttle: " + Coordinates[0] + "mins").icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza)));
                         }else{
@@ -598,8 +607,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
-                    } else if (setA[i] == 1) {
+                    } else if (set[i] == 1) {
                         mk[i].setPosition(start_location);
+                        mk[i].setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_gaza));
                         if (!start_location.equals(end_location))
                             animateMarker(end_location, mk[i]);
                         if((Double.parseDouble(Coordinates[0]))>=1) {
@@ -608,9 +618,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mk[i].setTitle("Arrival Time of Shuttle: Shuttle is close by");
                         }
                     }
-                }else if(setA[i]==1){
+                }else if(set[i]==1){
                     mk[i].remove();
-                    setA[i]=0;
+                    set[i]=0;
                 }
             }
 
